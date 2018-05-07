@@ -1,0 +1,72 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    tools:context=".main.profile.ProfileFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/img_people"
+            android:layout_width="100dp"
+            android:layout_height="200dp"
+            android:src="@drawable/ai_man_1"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="40dp"
+            android:translationZ="2dp"/>
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/xd_circle_gradient"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="-50dp"
+            android:layout_marginTop="150dp"/>
+
+        <ImageView
+            android:layout_width="113dp"
+            android:layout_height="113dp"
+            android:src="@drawable/xd_circle_gradient"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="-56dp"
+            android:layout_marginBottom="185dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Afdolash's\nHistory."
+                android:textSize="32sp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:fontFamily="@font/seguisb"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rc_history"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/img_people"
+                android:layout_weight="1"
+                android:layout_marginTop="24dp"
+                android:paddingTop="24dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:clipToPadding="false"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

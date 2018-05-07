@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.pens.afdolash.bytan.SplashActivity">
+
+    <ImageView
+        android:layout_width="209dp"
+        android:layout_height="209dp"
+        android:src="@drawable/xd_circle_gradient"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="-104dp"
+        android:layout_marginTop="62dp"/>
+
+    <ImageView
+        android:layout_width="113dp"
+        android:layout_height="113dp"
+        android:src="@drawable/xd_circle_gradient"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="-56dp"
+        android:layout_marginBottom="-40dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bytan."
+        android:textSize="52sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/segoe"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>
+
+

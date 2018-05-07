@@ -1,0 +1,134 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fr_bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    app:behavior_peekHeight="80dp"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="103dp"
+            android:layout_height="103dp"
+            android:layout_marginRight="-51.5dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/xd_circle_gradient" />
+
+        <ImageView
+            android:layout_width="238dp"
+            android:layout_height="238dp"
+            android:layout_marginLeft="-119dp"
+            android:layout_marginTop="350dp"
+            android:src="@drawable/xd_circle_gradient" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_bottom_sheet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:layout_anchorGravity="bottom|center"
+                app:cardCornerRadius="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/xd_ln_gradient"
+                    android:padding="24dp">
+
+                    <ImageView
+                        android:id="@+id/ic_wifi"
+                        android:layout_width="25dp"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/xd_group"
+                        android:tint="@color/colorWhite"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_name_group"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="AndroidDev"
+                            android:textSize="12sp"
+                            android:textColor="@color/colorWhite"
+                            android:fontFamily="@font/segoe"/>
+
+                        <TextView
+                            android:id="@+id/tv_name_master"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Afdolash's Group"
+                            android:textSize="10sp"
+                            android:textColor="@color/colorWhite"
+                            android:fontFamily="@font/segoe"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rc_member"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingTop="16dp"
+                android:paddingBottom="24dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/btn_send"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Send"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_leave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp"
+                android:layout_marginTop="24dp"
+                android:text="Leave Group"
+                android:textAllCaps="true"
+                android:textSize="16sp"
+                android:textColor="#F44336"
+                android:fontFamily="@font/seguisb"
+                android:gravity="center_horizontal|bottom"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="24dp"
+    android:layout_marginTop="40dp"
+    android:layout_marginLeft="24dp"
+    android:layout_marginRight="24dp"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    tools:context="com.pens.afdolash.bytan.main.group.DescriptionActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="22 February 2018"
+        android:textSize="10sp"
+        android:fontFamily="@font/segoe"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mild Hypothermia"
+        android:textSize="22sp"
+        android:fontFamily="@font/seguisb"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="30dp"
+        android:text="Sorry, I am very sad when you are infected with hypothermia today at Mount Semeru, Surabaya. Do not forget to eat healthy food and rest until your health improves. Keep the spirit in doing your daily activities :)"
+        android:textSize="12sp"
+        android:fontFamily="@font/segoe"/>
+    
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="132dp"
+        android:layout_marginTop="30dp"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="7dp">
+
+    </android.support.v7.widget.CardView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Body Condition When Attacked"
+        android:textSize="10sp"
+        android:fontFamily="@font/segoe"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:layout_weight="1.6"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="10dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="7dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-4dp"
+                android:orientation="horizontal"
+                android:gravity="bottom"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="37"
+                    android:textSize="32sp"
+                    android:fontFamily="@font/seguisb"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="C"
+                    android:textColor="#BDBDBD"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/seguisb"
+                    android:layout_marginLeft="4dp"/>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:layout_weight="1.4"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="10dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="7dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-4dp"
+                android:orientation="horizontal"
+                android:gravity="bottom"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="62"
+                    android:textSize="32sp"
+                    android:fontFamily="@font/seguisb"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="bpm"
+                    android:textColor="#BDBDBD"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/seguisb"
+                    android:layout_marginLeft="4dp"/>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:layout_weight="1.2"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="10dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="7dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-4dp"
+                android:orientation="horizontal"
+                android:gravity="bottom"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="6000"
+                    android:textSize="32sp"
+                    android:fontFamily="@font/seguisb"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="cc"
+                    android:textColor="#BDBDBD"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/seguisb"
+                    android:layout_marginLeft="4dp"/>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+    
+</LinearLayout>

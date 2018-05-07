@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    tools:context="com.pens.afdolash.bytan.bluetooth.BluetoothActivity">
+
+    <ImageView
+        android:layout_width="209dp"
+        android:layout_height="209dp"
+        android:src="@drawable/xd_circle_gradient"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="-104dp"
+        android:layout_marginTop="62dp"/>
+
+    <ImageView
+        android:layout_width="113dp"
+        android:layout_height="113dp"
+        android:src="@drawable/xd_circle_gradient"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="-56dp"
+        android:layout_marginBottom="185dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Select a\nBluetooth."
+            android:textSize="32sp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:fontFamily="@font/seguisb"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rc_devices"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:clipToPadding="false"/>
+
+        <TextView
+            android:id="@+id/tv_discover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Not see your bluetooth device? Discover."
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+</RelativeLayout>
