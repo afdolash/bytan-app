@@ -1,7 +1,10 @@
 package com.pens.afdolash.bytan.main;
 
+import android.app.Dialog;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,6 +13,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -19,6 +23,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abemart.wroup.client.WroupClient;
@@ -27,6 +33,8 @@ import com.abemart.wroup.common.WiFiP2PInstance;
 import com.abemart.wroup.service.WroupService;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.pens.afdolash.bytan.R;
+import com.pens.afdolash.bytan.bluetooth.BluetoothActivity;
+import com.pens.afdolash.bytan.bluetooth.BluetoothData;
 import com.pens.afdolash.bytan.bluetooth.BluetoothLeAttributes;
 import com.pens.afdolash.bytan.bluetooth.BluetoothLeService;
 import com.pens.afdolash.bytan.main.dashboard.DashboardFragment;
@@ -35,35 +43,47 @@ import com.pens.afdolash.bytan.main.group.MemberFragment;
 import com.pens.afdolash.bytan.main.group.MessageReceiver;
 import com.pens.afdolash.bytan.main.profile.ProfileFragment;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import static com.pens.afdolash.bytan.main.group.GroupFragment.GROUP_NAME;
+import static com.pens.afdolash.bytan.bluetooth.BluetoothActivity.DEVICE_PREF;
+import static com.pens.afdolash.bytan.bluetooth.BluetoothActivity.EXTRAS_DEVICE_ADDRESS;
+import static com.pens.afdolash.bytan.bluetooth.BluetoothActivity.EXTRAS_DEVICE_NAME;
+import static com.pens.afdolash.bytan.bluetooth.BluetoothActivity.REQUEST_ENABLE_BT;
+import static com.pens.afdolash.bytan.main.group.GroupFragment.EXTRAS_GROUP_NAME;
 import static com.pens.afdolash.bytan.main.group.GroupFragment.GROUP_PREF;
 
 public class MainActivity extends AppCompatActivity {
     public final static String MAIN_TAG = MainActivity.class.getSimpleName();
 
     public final static UUID HM_RX_TX = UUID.fromString(BluetoothLeAttributes.HM_RX_TX);
+    public final static String EXTRAS_DATA_BODY = "EXTRAS_DATA_BODY";
 
-    public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
-    public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
 
-    private SharedPreferences preferences;
+    private SharedPreferences prefGroup, prefDevice;
     private String groupName;
 
+    private BluetoothAdapter mBluetoothAdapter;
     private BluetoothLeService mBluetoothLeService;
     private BluetoothGattCharacteristic characteristicTX;
     private BluetoothGattCharacteristic characteristicRX;
     private boolean mConnected = false;
+    public boolean isSerial = false;
     public String mDeviceName;
     public String mDeviceAddress;
+    private List<BluetoothData> dataList = new ArrayList<>();
 
+    private Dialog dialogLoading;
     private BottomNavigationViewEx navigation;
+
     private WiFiDirectBroadcastReceiver mWifiDirectReceiver;
     public WroupService mWroupService;
     public WroupClient mWroupClient;
@@ -75,11 +95,14 @@ public class MainActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
             if (!mBluetoothLeService.initialize()) {
-                Log.e(MAIN_TAG, "Unable to initialize Bluetooth.");
+                prefDevice.edit().clear().commit();
+
+                Intent intent = new Intent(MainActivity.this, BluetoothActivity.class);
+                startActivity(intent);
                 finish();
+                Log.e(MAIN_TAG, "Unable to initialize Bluetooth.");
             }
 
-            // Automatically connects to the device upon successful start-up initialization.
             mBluetoothLeService.connect(mDeviceAddress);
         }
 
@@ -97,14 +120,24 @@ public class MainActivity extends AppCompatActivity {
                 mConnected = true;
                 updateConnectionState(R.string.connected);
                 invalidateOptionsMenu();
+
+                // Load dashboard fragment by default
+                loadFragment(new DashboardFragment());
+                dialogLoading.dismiss();
+
+                Toast.makeText(context, String.valueOf(mConnected), Toast.LENGTH_SHORT).show();
+
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 updateConnectionState(R.string.disconnected);
                 invalidateOptionsMenu();
                 clearUI();
+                Toast.makeText(context, String.valueOf(mConnected), Toast.LENGTH_SHORT).show();
+
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
+
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 displayData(intent.getStringExtra(mBluetoothLeService.EXTRA_DATA));
             }
@@ -144,38 +177,68 @@ public class MainActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setTextVisibility(false);
 
+        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+
         // Get address and device name bluetooth
-        final Intent intent = getIntent();
-        mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
-        mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+        prefDevice = getSharedPreferences(DEVICE_PREF, MODE_PRIVATE);
+        if (prefDevice.getString(EXTRAS_DEVICE_ADDRESS, null) == null) {
+            final Intent intent = getIntent();
+            mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+            mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+        } else {
+            mDeviceName = prefDevice.getString(EXTRAS_DEVICE_NAME, null);
+            mDeviceAddress = prefDevice.getString(EXTRAS_DEVICE_ADDRESS, null);
+        }
 
-        preferences = getSharedPreferences(GROUP_PREF, MODE_PRIVATE);
-        groupName = preferences.getString(GROUP_NAME, null);
-
-        messageReceiver = new MessageReceiver();
+        prefGroup = getSharedPreferences(GROUP_PREF, MODE_PRIVATE);
+        groupName = prefGroup.getString(EXTRAS_GROUP_NAME, null);
 
         // Broadcast receiver
+        messageReceiver = new MessageReceiver();
         mWifiDirectReceiver = WiFiP2PInstance.getInstance(this).getBroadcastReceiver();
-
-        // Load dashboard fragment by default
-        loadFragment(new DashboardFragment());
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
+        // Display loading animate
+        View view = getLayoutInflater().inflate(R.layout.dialog_loading, null);
+        dialogLoading = new Dialog(this, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+        dialogLoading.setContentView(view);
+        dialogLoading.setCancelable(false);
+        dialogLoading.show();
+
+        // Send state ACTIVE to Arduino
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                changeState(8);
+            }
+        }, 5000);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Toast.makeText(this, String.valueOf(mConnected), Toast.LENGTH_SHORT).show();
+
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         registerReceiver(mWifiDirectReceiver, makeWifiDirectIntentFilter());
 
         mWroupService = WroupService.getInstance(getApplicationContext());
         mWroupClient = WroupClient.getInstance(getApplicationContext());
 
-        if (mBluetoothLeService != null) {
-            final boolean result = mBluetoothLeService.connect(mDeviceAddress);
-            Log.d(MAIN_TAG, "Connect request result: " + result);
+        // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
+        // fire an intent to display a dialog asking the user to grant permission to enable it.
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        } else {
+            if (mBluetoothLeService != null) {
+                final boolean result = mBluetoothLeService.connect(mDeviceAddress);
+                Log.d(MAIN_TAG, "Connect request result: " + result);
+            }
         }
     }
 
@@ -192,8 +255,8 @@ public class MainActivity extends AppCompatActivity {
         unbindService(mServiceConnection);
         mBluetoothLeService = null;
 
-        if (mWroupService != null) mWroupService.disconnect();
-        if (mWroupClient != null) mWroupClient.disconnect();
+//        if (mWroupService != null) mWroupService.disconnect();
+//        if (mWroupClient != null) mWroupClient.disconnect();
     }
 
     @Override
@@ -206,6 +269,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    public void changeState(int code) {
+        if (isSerial) {
+            String activeParams = String.valueOf(code);
+            final byte[] tx = activeParams.getBytes(Charset.forName("UTF-8"));
+            if(mConnected) {
+                characteristicTX.setValue(tx);
+                mBluetoothLeService.writeCharacteristic(characteristicTX);
+                mBluetoothLeService.setCharacteristicNotification(characteristicRX,true);
+            }
+        }
+        return;
+    }
 
     public void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -233,10 +309,44 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private String jsonString;
     private void displayData(String data) {
         if (data != null) {
+            if (data.startsWith("{")) {
+                jsonString = "";
+            }
+
+            if (!data.equals("Failed!") || !data.equals("Success.")) {
+                jsonString += data;
+            }
+
             Toast.makeText(mBluetoothLeService, data, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mBluetoothLeService, jsonString, Toast.LENGTH_SHORT).show();
+
+            try {
+                JSONObject jsonObject = new JSONObject(jsonString);
+
+                BluetoothData bluetoothData = new BluetoothData(
+                        jsonObject.getString("amb"),
+                        jsonObject.getString("obj"),
+                        jsonObject.getString("heart"),
+                        jsonObject.getString("spo"),
+                        jsonObject.getString("code")
+                );
+
+                if (!dataList.contains(bluetoothData)) {
+                    dataList.add(bluetoothData);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(mBluetoothLeService, data, Toast.LENGTH_SHORT).show();
+            }
         }
+    }
+
+    public List<BluetoothData> getDataList() {
+        return dataList;
     }
 
     /**
@@ -248,10 +358,10 @@ public class MainActivity extends AppCompatActivity {
      */
     private void displayGattServices(List<BluetoothGattService> gattServices) {
         if (gattServices == null) return;
+
         String uuid = null;
         String unknownServiceString = "Unknown Service";
         ArrayList<HashMap<String, String>> gattServiceData = new ArrayList<HashMap<String, String>>();
-
 
         // Loops through available GATT Services.
         for (BluetoothGattService gattService : gattServices) {
@@ -262,8 +372,14 @@ public class MainActivity extends AppCompatActivity {
             // If the service exists for HM 10 Serial, say so.
             if(BluetoothLeAttributes.lookup(uuid, unknownServiceString) == "HM 10 Serial") {
                 Toast.makeText(mBluetoothLeService, "Yes, serial :-)", Toast.LENGTH_SHORT).show();
+                prefDevice.edit()
+                        .putString(EXTRAS_DEVICE_NAME, mDeviceName)
+                        .putString(EXTRAS_DEVICE_ADDRESS, mDeviceAddress)
+                        .commit();
+                isSerial = true;
             } else {
                 Toast.makeText(mBluetoothLeService, "No, serial :-(", Toast.LENGTH_SHORT).show();
+                isSerial = false;
             }
             currentServiceData.put(LIST_UUID, uuid);
             gattServiceData.add(currentServiceData);

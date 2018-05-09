@@ -3,6 +3,7 @@ package com.pens.afdolash.bytan.bluetooth;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +16,11 @@ import com.pens.afdolash.bytan.R;
 import com.pens.afdolash.bytan.main.MainActivity;
 
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
+import static com.pens.afdolash.bytan.bluetooth.BluetoothActivity.DEVICE_PREF;
+import static com.pens.afdolash.bytan.bluetooth.BluetoothActivity.EXTRAS_DEVICE_ADDRESS;
+import static com.pens.afdolash.bytan.bluetooth.BluetoothActivity.EXTRAS_DEVICE_NAME;
 
 /**
  * Created by afdol on 4/5/2018.
@@ -51,12 +57,13 @@ public class BluetoothLeAdapter extends RecyclerView.Adapter<BluetoothLeAdapter.
             public void onClick(View view) {
                 if (device == null) return;
 
-                ((BluetoothActivity) context).scanLeDevice(false);
-
                 Intent intent = new Intent(context, MainActivity.class);
-                intent.putExtra(MainActivity.EXTRAS_DEVICE_NAME, device.getName());
-                intent.putExtra(MainActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+                intent.putExtra(EXTRAS_DEVICE_NAME, device.getName());
+                intent.putExtra(EXTRAS_DEVICE_ADDRESS, device.getAddress());
                 context.startActivity(intent);
+
+                ((BluetoothActivity) context).finish();
+                ((BluetoothActivity) context).scanLeDevice(false);
             }
         });
     }

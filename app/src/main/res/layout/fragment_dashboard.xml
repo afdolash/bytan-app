@@ -94,9 +94,10 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tv_temperature"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="36.75"
+                            android:text="--.--"
                             android:textSize="32sp"
                             android:fontFamily="@font/seguisb"/>
 
@@ -142,9 +143,10 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tv_heart"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="75"
+                            android:text="--.--"
                             android:textSize="32sp"
                             android:fontFamily="@font/seguisb"/>
 
@@ -200,7 +202,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="36.75"
+                            android:text="--.--"
                             android:textSize="32sp"
                             android:fontFamily="@font/seguisb"/>
 
@@ -246,9 +248,10 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tv_spO2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="90"
+                            android:text="--"
                             android:textSize="32sp"
                             android:fontFamily="@font/seguisb"/>
 

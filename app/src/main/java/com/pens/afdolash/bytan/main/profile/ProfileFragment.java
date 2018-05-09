@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.pens.afdolash.bytan.R;
 
-import static com.pens.afdolash.bytan.SplashActivity.USER_NAME;
-import static com.pens.afdolash.bytan.SplashActivity.USER_PREF;
+import static com.pens.afdolash.bytan.intro.IntroductionActivity.EXTRAS_USER_NAME;
+import static com.pens.afdolash.bytan.intro.IntroductionActivity.USER_PREF;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,7 +41,7 @@ public class ProfileFragment extends Fragment {
         rcHistory = (RecyclerView) view.findViewById(R.id.rc_history);
 
         preferences = getContext().getSharedPreferences(USER_PREF, Context.MODE_PRIVATE);
-        String name = preferences.getString(USER_NAME, "Guest");
+        String name = preferences.getString(EXTRAS_USER_NAME, "Guest");
 
         tvTitle.setText(name +"'s\nHistory");
 

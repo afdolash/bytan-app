@@ -32,10 +32,10 @@ import java.util.List;
 public class GroupFragment extends Fragment implements GroupCreationDialog.GroupCreationListener, GroupDiscoveryDialog.GroupDiscoveryListener {
     public static final String GROUP_TAG = GroupFragment.class.getSimpleName();
 
-    public static final String GROUP_PREF = "group-pref";
-    public static final String GROUP_NAME = "group-name";
-    public static final String GROUP_OWNER = "group-owner";
-    public static final String GROUP_IS_OWNER = "group-is-owner";
+    public static final String GROUP_PREF = "GROUP_PREF";
+    public static final String EXTRAS_GROUP_NAME = "GROUP_NAME";
+    public static final String EXTRAS_GROUP_OWNER = "GROUP_OWNER";
+    public static final String EXTRAS_GROUP_IS_OWNER = "GROUP_IS_OWNER";
 
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
@@ -97,8 +97,8 @@ public class GroupFragment extends Fragment implements GroupCreationDialog.Group
                     createGroupDialog.dismiss();
                     ((MainActivity) getActivity()).loadFragment(new MemberFragment());
 
-                    editor.putString(GROUP_NAME, groupName);
-                    editor.putBoolean(GROUP_IS_OWNER, true);
+                    editor.putString(EXTRAS_GROUP_NAME, groupName);
+                    editor.putBoolean(EXTRAS_GROUP_IS_OWNER, true);
                     editor.commit();
 
                     Log.i(GROUP_TAG, "Group created. Launching GroupChatActivity...");

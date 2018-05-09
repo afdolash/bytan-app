@@ -29,9 +29,9 @@ import com.abemart.wroup.service.WroupService;
 import com.pens.afdolash.bytan.R;
 import com.pens.afdolash.bytan.main.MainActivity;
 
-import static com.pens.afdolash.bytan.main.group.GroupFragment.GROUP_IS_OWNER;
-import static com.pens.afdolash.bytan.main.group.GroupFragment.GROUP_NAME;
-import static com.pens.afdolash.bytan.main.group.GroupFragment.GROUP_OWNER;
+import static com.pens.afdolash.bytan.main.group.GroupFragment.EXTRAS_GROUP_IS_OWNER;
+import static com.pens.afdolash.bytan.main.group.GroupFragment.EXTRAS_GROUP_NAME;
+import static com.pens.afdolash.bytan.main.group.GroupFragment.EXTRAS_GROUP_OWNER;
 import static com.pens.afdolash.bytan.main.group.GroupFragment.GROUP_PREF;
 
 /**
@@ -94,9 +94,9 @@ public class MemberFragment extends Fragment implements DataReceivedListener, Cl
         preferences = getActivity().getSharedPreferences(GROUP_PREF, Context.MODE_PRIVATE);
         editor = preferences.edit();
 
-        groupName = preferences.getString(GROUP_NAME, null);
-        groupOwner = preferences.getString(GROUP_OWNER, null);
-        isGroupOwner = preferences.getBoolean(GROUP_IS_OWNER, false);
+        groupName = preferences.getString(EXTRAS_GROUP_NAME, null);
+        groupOwner = preferences.getString(EXTRAS_GROUP_OWNER, null);
+        isGroupOwner = preferences.getBoolean(EXTRAS_GROUP_IS_OWNER, false);
 
         if (isGroupOwner) {
             wroupService = ((MainActivity) getActivity()).mWroupService;
@@ -136,9 +136,9 @@ public class MemberFragment extends Fragment implements DataReceivedListener, Cl
                 if (wroupService != null) wroupService.disconnect();
                 if (wroupClient != null) wroupClient.disconnect();
 
-                editor.putString(GROUP_NAME, null);
-                editor.putString(GROUP_OWNER, null);
-                editor.putBoolean(GROUP_IS_OWNER, false);
+                editor.putString(EXTRAS_GROUP_NAME, null);
+                editor.putString(EXTRAS_GROUP_OWNER, null);
+                editor.putBoolean(EXTRAS_GROUP_IS_OWNER, false);
                 editor.commit();
 
                 ((MainActivity) getActivity()).destroyFragment(MemberFragment.this);

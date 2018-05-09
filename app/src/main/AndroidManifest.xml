@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pens.afdolash.bytan">
 
-    <uses-feature android:name="android.hardware.bluetooth" />
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
@@ -56,8 +55,7 @@
 
         <service
             android:name=".bluetooth.BluetoothLeService"
-            android:enabled="true"
-            android:exported="true" />
+            android:enabled="true" />
 
         <service
             android:name=".main.group.GPSTrackerService"

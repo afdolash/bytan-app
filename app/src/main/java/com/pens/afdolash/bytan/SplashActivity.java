@@ -11,14 +11,14 @@ import com.pens.afdolash.bytan.bluetooth.BluetoothActivity;
 import com.pens.afdolash.bytan.intro.IntroductionActivity;
 import com.pens.afdolash.bytan.main.MainActivity;
 
+import static com.pens.afdolash.bytan.bluetooth.BluetoothActivity.DEVICE_PREF;
+import static com.pens.afdolash.bytan.bluetooth.BluetoothActivity.EXTRAS_DEVICE_ADDRESS;
+import static com.pens.afdolash.bytan.intro.IntroductionActivity.EXTRAS_USER_NAME;
+import static com.pens.afdolash.bytan.intro.IntroductionActivity.USER_PREF;
+
 public class SplashActivity extends AppCompatActivity {
 
-    public static final String USER_PREF = "user-pref";
-    public static final String USER_NAME = "user-name";
-    public static final String USER_GENDER = "user-gender";
-
-    private SharedPreferences preferences;
-
+    private SharedPreferences userPref, devicePref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,21 +29,25 @@ public class SplashActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                preferences = getSharedPreferences(USER_PREF, Context.MODE_PRIVATE);
-                String name = preferences.getString(USER_NAME, null);
-                String address = preferences.getString(USER_NAME, null);
+                userPref = getSharedPreferences(USER_PREF, Context.MODE_PRIVATE);
+                String name = userPref.getString(EXTRAS_USER_NAME, null);
+
+                devicePref = getSharedPreferences(DEVICE_PREF, Context.MODE_PRIVATE);
+                String address = devicePref.getString(EXTRAS_DEVICE_ADDRESS, null);
 
                 if (name == null) {
                     Intent intent = new Intent(SplashActivity.this, IntroductionActivity.class);
                     startActivity(intent);
-                } else {
+                } else if (address == null){
                     Intent intent = new Intent(SplashActivity.this, BluetoothActivity.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
                 finish();
             }
         }, 3000);
-
     }
 
     @Override

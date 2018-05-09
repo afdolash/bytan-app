@@ -16,11 +16,10 @@ import android.widget.RelativeLayout;
 import com.pens.afdolash.bytan.R;
 import com.pens.afdolash.bytan.bluetooth.BluetoothActivity;
 
-import static com.pens.afdolash.bytan.SplashActivity.USER_GENDER;
-import static com.pens.afdolash.bytan.SplashActivity.USER_NAME;
-import static com.pens.afdolash.bytan.SplashActivity.USER_PREF;
-
 public class IntroductionActivity extends AppCompatActivity {
+    public static final String USER_PREF = "USER_PREF";
+    public static final String EXTRAS_USER_NAME = "USER_NAME";
+    public static final String EXTRAS_USER_GENDER = "USER_GENDER";
 
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
@@ -58,8 +57,8 @@ public class IntroductionActivity extends AppCompatActivity {
                 String name = etName.getText().toString();
                 String gender = radButton.getText().toString();
 
-                editor.putString(USER_NAME, name);
-                editor.putString(USER_GENDER, gender);
+                editor.putString(EXTRAS_USER_NAME, name);
+                editor.putString(EXTRAS_USER_GENDER, gender);
                 editor.commit();
 
                 Intent intent = new Intent(IntroductionActivity.this, BluetoothActivity.class);

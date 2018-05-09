@@ -3,8 +3,6 @@ package com.pens.afdolash.bytan.main.group;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,9 +21,9 @@ import com.pens.afdolash.bytan.main.MainActivity;
 
 import java.util.List;
 
-import static com.pens.afdolash.bytan.main.group.GroupFragment.GROUP_IS_OWNER;
-import static com.pens.afdolash.bytan.main.group.GroupFragment.GROUP_NAME;
-import static com.pens.afdolash.bytan.main.group.GroupFragment.GROUP_OWNER;
+import static com.pens.afdolash.bytan.main.group.GroupFragment.EXTRAS_GROUP_IS_OWNER;
+import static com.pens.afdolash.bytan.main.group.GroupFragment.EXTRAS_GROUP_NAME;
+import static com.pens.afdolash.bytan.main.group.GroupFragment.EXTRAS_GROUP_OWNER;
 import static com.pens.afdolash.bytan.main.group.GroupFragment.GROUP_PREF;
 
 /**
@@ -75,9 +73,9 @@ public class WifiDirectAdapter extends RecyclerView.Adapter<WifiDirectAdapter.My
                         progressDialog.dismiss();
                         ((MainActivity) context).loadFragment(new MemberFragment());
 
-                        editor.putString(GROUP_NAME, device.getTxtRecordMap().get(WroupService.SERVICE_GROUP_NAME));
-                        editor.putString(GROUP_OWNER, device.getDeviceName() +"'s Group");
-                        editor.putBoolean(GROUP_IS_OWNER, false);
+                        editor.putString(EXTRAS_GROUP_NAME, device.getTxtRecordMap().get(WroupService.SERVICE_GROUP_NAME));
+                        editor.putString(EXTRAS_GROUP_OWNER, device.getDeviceName() +"'s Group");
+                        editor.putBoolean(EXTRAS_GROUP_IS_OWNER, false);
                         editor.commit();
 
                         Toast.makeText(context, "Connected.", Toast.LENGTH_SHORT).show();
