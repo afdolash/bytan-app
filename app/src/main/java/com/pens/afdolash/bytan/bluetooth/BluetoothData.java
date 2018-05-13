@@ -12,9 +12,9 @@ public class BluetoothData implements Parcelable {
     private String objTemp;
     private String heartRate;
     private String spO2;
-    private String code;
+    private int code;
 
-    public BluetoothData(String ambTemp, String objTemp, String heartRate, String spO2, String code) {
+    public BluetoothData(String ambTemp, String objTemp, String heartRate, String spO2, int code) {
         this.ambTemp = ambTemp;
         this.objTemp = objTemp;
         this.heartRate = heartRate;
@@ -38,7 +38,7 @@ public class BluetoothData implements Parcelable {
         return spO2;
     }
 
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 
@@ -54,7 +54,7 @@ public class BluetoothData implements Parcelable {
         dest.writeString(this.objTemp);
         dest.writeString(this.heartRate);
         dest.writeString(this.spO2);
-        dest.writeString(this.code);
+        dest.writeInt(this.code);
     }
 
     protected BluetoothData(Parcel in) {
@@ -62,10 +62,10 @@ public class BluetoothData implements Parcelable {
         this.objTemp = in.readString();
         this.heartRate = in.readString();
         this.spO2 = in.readString();
-        this.code = in.readString();
+        this.code = in.readInt();
     }
 
-    public static final Parcelable.Creator<BluetoothData> CREATOR = new Parcelable.Creator<BluetoothData>() {
+    public static final Creator<BluetoothData> CREATOR = new Creator<BluetoothData>() {
         @Override
         public BluetoothData createFromParcel(Parcel source) {
             return new BluetoothData(source);

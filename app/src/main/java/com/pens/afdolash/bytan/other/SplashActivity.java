@@ -1,4 +1,4 @@
-package com.pens.afdolash.bytan;
+package com.pens.afdolash.bytan.other;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.pens.afdolash.bytan.R;
 import com.pens.afdolash.bytan.bluetooth.BluetoothActivity;
 import com.pens.afdolash.bytan.intro.IntroductionActivity;
 import com.pens.afdolash.bytan.main.MainActivity;

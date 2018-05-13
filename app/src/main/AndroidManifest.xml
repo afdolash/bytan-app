@@ -21,10 +21,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SplashActivity"
+            android:name=".other.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent">
+            android:theme="@style/AppTheme.Transparent"
+            android:autoRemoveFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,27 +37,36 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transparent"
-            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"/>
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
+            android:autoRemoveFromRecents="true" />
         <activity
             android:name=".bluetooth.BluetoothActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent" />
+            android:theme="@style/AppTheme.Transparent"
+            android:autoRemoveFromRecents="true"/>
         <activity
             android:name=".main.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent" />
+            android:theme="@style/AppTheme.Transparent"
+            android:autoRemoveFromRecents="true"/>
         <activity
             android:name=".main.group.DescriptionActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent" />
+            android:theme="@style/AppTheme.Transparent"
+            android:autoRemoveFromRecents="true"/>
+        <activity
+            android:name=".other.AlertActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Dialog"
+            android:autoRemoveFromRecents="true"/>
 
         <service
             android:name=".bluetooth.BluetoothLeService"
             android:enabled="true" />
-
         <service
             android:name=".main.group.GPSTrackerService"
             android:enabled="true"

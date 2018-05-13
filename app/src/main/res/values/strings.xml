@@ -10,4 +10,9 @@
 
     <string name="connected">Connected</string>
     <string name="disconnected">Disconnected</string>
+
+    <string name="message_healthy">Your health is in good condition. Do your activities and keep your health</string>
+    <string name="message_rest">You are tired, stop for a moment and warm your body to avoid hypothermia</string>
+    <string name="message_hipotermia">Keep your body warm, stop doing activities. Take off your wet clothes and wrap your body in a layered cloth</string>
+    <string name="message_emergency">Emergency! Emergency! Immediately seek help, telephone the nearest hospital</string>
 </resources>

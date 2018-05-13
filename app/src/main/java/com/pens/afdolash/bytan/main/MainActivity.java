@@ -31,6 +31,7 @@ import com.abemart.wroup.client.WroupClient;
 import com.abemart.wroup.common.WiFiDirectBroadcastReceiver;
 import com.abemart.wroup.common.WiFiP2PInstance;
 import com.abemart.wroup.service.WroupService;
+import com.db.chart.model.LineSet;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.pens.afdolash.bytan.R;
 import com.pens.afdolash.bytan.bluetooth.BluetoothActivity;
@@ -42,6 +43,7 @@ import com.pens.afdolash.bytan.main.group.GroupFragment;
 import com.pens.afdolash.bytan.main.group.MemberFragment;
 import com.pens.afdolash.bytan.main.group.MessageReceiver;
 import com.pens.afdolash.bytan.main.profile.ProfileFragment;
+import com.pens.afdolash.bytan.other.AlertActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     public final static String MAIN_TAG = MainActivity.class.getSimpleName();
 
     public final static UUID HM_RX_TX = UUID.fromString(BluetoothLeAttributes.HM_RX_TX);
-    public final static String EXTRAS_DATA_BODY = "EXTRAS_DATA_BODY";
+    public final static String EXTRAS_BODY_CODE = "EXTRAS_BODY_CODE";
 
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
@@ -71,22 +73,27 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences prefGroup, prefDevice;
     private String groupName;
 
+    public String mDeviceName;
+    public String mDeviceAddress;
+
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothLeService mBluetoothLeService;
     private BluetoothGattCharacteristic characteristicTX;
     private BluetoothGattCharacteristic characteristicRX;
     private boolean mConnected = false;
-    public boolean isSerial = false;
-    public String mDeviceName;
-    public String mDeviceAddress;
     private List<BluetoothData> dataList = new ArrayList<>();
-
-    private Dialog dialogLoading;
-    private BottomNavigationViewEx navigation;
 
     private WiFiDirectBroadcastReceiver mWifiDirectReceiver;
     public WroupService mWroupService;
     public WroupClient mWroupClient;
+
+    private Handler handler = new Handler();
+    private boolean isSerial = false;
+    private boolean isAlert = false;
+    public Fragment focusFragment;
+
+    private Dialog dialogLoading;
+    private BottomNavigationViewEx navigation;
 
     public MessageReceiver messageReceiver;
 
@@ -207,21 +214,20 @@ public class MainActivity extends AppCompatActivity {
         dialogLoading.setContentView(view);
         dialogLoading.setCancelable(false);
         dialogLoading.show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isAlert = false;
 
         // Send state ACTIVE to Arduino
-        final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 changeState(8);
             }
         }, 5000);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Toast.makeText(this, String.valueOf(mConnected), Toast.LENGTH_SHORT).show();
 
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         registerReceiver(mWifiDirectReceiver, makeWifiDirectIntentFilter());
@@ -245,13 +251,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(mGattUpdateReceiver);
-        unregisterReceiver(mWifiDirectReceiver);
+        isAlert = true;
+
+        // Send state IDLE to Arduino
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                changeState(9);
+            }
+        }, 5000);
+
+//        unregisterReceiver(mGattUpdateReceiver);
+//        unregisterReceiver(mWifiDirectReceiver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        unregisterReceiver(mGattUpdateReceiver);
+        unregisterReceiver(mWifiDirectReceiver);
+
         unbindService(mServiceConnection);
         mBluetoothLeService = null;
 
@@ -261,11 +281,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (navigation.getSelectedItemId() != R.id.nav_dashboard) {
-            loadFragment(new DashboardFragment());
-            navigation.setSelectedItemId(R.id.nav_dashboard);
+        if (focusFragment == null) {
+            if (navigation.getSelectedItemId() != R.id.nav_dashboard) {
+                loadFragment(new DashboardFragment());
+                navigation.setSelectedItemId(R.id.nav_dashboard);
+            } else {
+                super.onBackPressed();
+            }
         } else {
-            super.onBackPressed();
+            loadFragment(new DashboardFragment());
+            destroyFragment(focusFragment);
+            focusFragment = null;
         }
     }
 
@@ -274,13 +300,20 @@ public class MainActivity extends AppCompatActivity {
         if (isSerial) {
             String activeParams = String.valueOf(code);
             final byte[] tx = activeParams.getBytes(Charset.forName("UTF-8"));
-            if(mConnected) {
+            if (mConnected && characteristicTX != null && characteristicRX != null) {
                 characteristicTX.setValue(tx);
                 mBluetoothLeService.writeCharacteristic(characteristicTX);
                 mBluetoothLeService.setCharacteristicNotification(characteristicRX,true);
             }
         }
         return;
+    }
+
+    public void loadFragmentAbove(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     public void loadFragment(Fragment fragment) {
@@ -331,11 +364,21 @@ public class MainActivity extends AppCompatActivity {
                         jsonObject.getString("obj"),
                         jsonObject.getString("heart"),
                         jsonObject.getString("spo"),
-                        jsonObject.getString("code")
+                        jsonObject.getInt("code")
                 );
 
                 if (!dataList.contains(bluetoothData)) {
                     dataList.add(bluetoothData);
+
+                    int bodyCode = bluetoothData.getCode();
+
+                    if (isAlert && bodyCode != 0) {
+                        isAlert = false;
+
+                        Intent intent = new Intent(mBluetoothLeService, AlertActivity.class);
+                        intent.putExtra(EXTRAS_BODY_CODE, bodyCode);
+                        startActivity(intent);
+                    }
                 }
 
             } catch (JSONException e) {

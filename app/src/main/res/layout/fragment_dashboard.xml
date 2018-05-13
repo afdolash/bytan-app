@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Your health is in good condition. Do the activity as usual. Take care of your health and keep your spirits up! :)"
+                android:text="..."
                 android:textSize="12sp"
                 android:fontFamily="@font/segoe"/>
 
@@ -79,6 +79,7 @@
                 android:layout_weight="1">
 
                 <LinearLayout
+                    android:id="@+id/ln_temperature"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -97,9 +98,9 @@
                             android:id="@+id/tv_temperature"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/seguisb"
                             android:text="--.--"
-                            android:textSize="32sp"
-                            android:fontFamily="@font/seguisb"/>
+                            android:textSize="32sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -115,10 +116,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/segoe"
                         android:text="Temperature"
-                        android:textSize="12sp"
                         android:textColor="#9E9E9E"
-                        android:fontFamily="@font/segoe"/>
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -128,6 +129,7 @@
                     android:background="#e0e0e0"/>
 
                 <LinearLayout
+                    android:id="@+id/ln_heart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingTop="24dp"
