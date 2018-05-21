@@ -132,14 +132,11 @@ public class MainActivity extends AppCompatActivity {
                 loadFragment(new DashboardFragment());
                 dialogLoading.dismiss();
 
-                Toast.makeText(context, String.valueOf(mConnected), Toast.LENGTH_SHORT).show();
-
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 updateConnectionState(R.string.disconnected);
                 invalidateOptionsMenu();
                 clearUI();
-                Toast.makeText(context, String.valueOf(mConnected), Toast.LENGTH_SHORT).show();
 
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
@@ -292,6 +289,14 @@ public class MainActivity extends AppCompatActivity {
             loadFragment(new DashboardFragment());
             destroyFragment(focusFragment);
             focusFragment = null;
+
+            // Send state ACTIVE to Arduino
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    changeState(8);
+                }
+            }, 5000);
         }
     }
 
@@ -337,7 +342,6 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(mBluetoothLeService, String.valueOf(resourceId), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -352,9 +356,6 @@ public class MainActivity extends AppCompatActivity {
             if (!data.equals("Failed!") || !data.equals("Success.")) {
                 jsonString += data;
             }
-
-            Toast.makeText(mBluetoothLeService, data, Toast.LENGTH_SHORT).show();
-            Toast.makeText(mBluetoothLeService, jsonString, Toast.LENGTH_SHORT).show();
 
             try {
                 JSONObject jsonObject = new JSONObject(jsonString);
@@ -383,7 +384,6 @@ public class MainActivity extends AppCompatActivity {
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                Toast.makeText(mBluetoothLeService, data, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -414,14 +414,12 @@ public class MainActivity extends AppCompatActivity {
 
             // If the service exists for HM 10 Serial, say so.
             if(BluetoothLeAttributes.lookup(uuid, unknownServiceString) == "HM 10 Serial") {
-                Toast.makeText(mBluetoothLeService, "Yes, serial :-)", Toast.LENGTH_SHORT).show();
                 prefDevice.edit()
                         .putString(EXTRAS_DEVICE_NAME, mDeviceName)
                         .putString(EXTRAS_DEVICE_ADDRESS, mDeviceAddress)
                         .commit();
                 isSerial = true;
             } else {
-                Toast.makeText(mBluetoothLeService, "No, serial :-(", Toast.LENGTH_SHORT).show();
                 isSerial = false;
             }
             currentServiceData.put(LIST_UUID, uuid);

@@ -1,6 +1,9 @@
 package com.pens.afdolash.bytan.main.dashboard.focus;
 
 
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -11,11 +14,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.db.chart.model.LineSet;
+import com.db.chart.model.Point;
+import com.db.chart.renderer.AxisRenderer;
+import com.db.chart.util.Tools;
 import com.db.chart.view.LineChartView;
 import com.pens.afdolash.bytan.R;
 import com.pens.afdolash.bytan.bluetooth.BluetoothData;
 import com.pens.afdolash.bytan.main.MainActivity;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -23,11 +32,16 @@ import java.util.List;
  */
 public class FocusHeartFragment extends Fragment {
 
-    private TextView tvHeart;
+    private TextView tvHeart, tvNote;
     private LineChartView chartHeart;
     private RelativeLayout rvStart;
 
-    private int counter = 0;
+    private boolean isStop = true;
+
+    private List<BluetoothData> dataTemp = new ArrayList<>();
+    private LineSet dataset;
+    private final String[]  mLabels = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
+    private float[] mValue = {0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
 
     private Handler handler = new Handler();
     private final Runnable runnable = new Runnable() {
@@ -49,14 +63,18 @@ public class FocusHeartFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_focus_heart, container, false);
 
         tvHeart = (TextView) view.findViewById(R.id.tv_heart);
+        tvNote = (TextView) view.findViewById(R.id.tv_note);
         chartHeart = (LineChartView) view.findViewById(R.id.chart_heart);
         rvStart = (RelativeLayout) view.findViewById(R.id.rv_start);
 
         rvStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                tvNote.setVisibility(View.VISIBLE);
                 rvStart.setClickable(false);
                 rvStart.setAlpha(0.5f);
+                dataTemp.clear();
+                isStop = false;
 
                 // Send state ACTIVE to Arduino
                 final Handler handler = new Handler();
@@ -66,6 +84,33 @@ public class FocusHeartFragment extends Fragment {
             }
         });
 
+        dataset = new LineSet(mLabels, mValue);
+        dataset.setColor(Color.parseColor("#0D87FF"))
+                .setThickness(Tools.fromDpToPx(3))
+                .setSmooth(true)
+                .beginAt(0)
+                .endAt(15);
+
+        for (int i = 0; i < mValue.length; i++) {
+            Point point = (Point) dataset.getEntry(i);
+            point.setColor(Color.parseColor("#0CE8A2"));
+        }
+
+        chartHeart.addData(dataset);
+
+        Paint thresPaint = new Paint();
+        thresPaint.setColor(Color.parseColor("#0079AE"));
+        thresPaint.setStyle(Paint.Style.STROKE);
+        thresPaint.setAntiAlias(true);
+        thresPaint.setStrokeWidth(Tools.fromDpToPx(.75f));
+        thresPaint.setPathEffect(new DashPathEffect(new float[]{10, 10}, 0));
+
+        chartHeart.setXLabels(AxisRenderer.LabelPosition.NONE)
+                .setYLabels(AxisRenderer.LabelPosition.NONE)
+                .setValueThreshold(60f, 100f, thresPaint)
+                .setAxisBorderValues(0, 200)
+                .show();
+
         return view;
     }
 
@@ -73,26 +118,39 @@ public class FocusHeartFragment extends Fragment {
         List<BluetoothData> dataList = ((MainActivity)getActivity()).getDataList();
 
         if (dataList.size() != 0) {
-            int bodyCode = dataList.get(dataList.size() - 1).getCode();
             BluetoothData lastUpdate = dataList.get(dataList.size() - 1);
+            int bodyCode = lastUpdate.getCode();
 
-            if (bodyCode == 99) {
+            if (bodyCode == 99 && !dataTemp.contains(lastUpdate)) {
+                dataTemp.add(lastUpdate);
                 tvHeart.setText(lastUpdate.getHeartRate());
 
-                Toast.makeText(getContext(), "Counter:" + counter, Toast.LENGTH_SHORT).show();
-                counter++;
-
-                if (counter == 15) {
-                    rvStart.setClickable(true);
-                    rvStart.setAlpha(1f);
-                    tvHeart.setText(lastUpdate.getHeartRate());
+                for (int i = 0; i < mValue.length - 1; i++) {
+                    mValue[i] = mValue[i + 1];
                 }
+                mValue[mValue.length - 1] = Float.parseFloat(lastUpdate.getHeartRate());
+                chartHeart.updateValues(0, mValue);
+                chartHeart.notifyDataUpdate();
+            }
+
+            if (dataTemp.size() >= 15){
+                float sumDataHeart = 0;
+
+                // Checkpoint
+                for (BluetoothData data : dataTemp) {
+                    sumDataHeart += Float.parseFloat(data.getHeartRate());
+                }
+
+                tvNote.setVisibility(View.GONE);
+                rvStart.setClickable(true);
+                rvStart.setAlpha(1f);
+                tvHeart.setText(String.format("%.2f", (sumDataHeart / dataTemp.size())));
+                isStop = true;
             }
         }
 
-        if (counter == 15) {
+        if (isStop) {
             handler.removeCallbacks(runnable);
-            counter = 0;
         } else {
             handler.postDelayed(runnable, 1000);
         }

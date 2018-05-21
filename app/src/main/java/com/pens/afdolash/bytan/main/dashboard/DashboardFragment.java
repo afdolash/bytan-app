@@ -132,19 +132,22 @@ public class DashboardFragment extends Fragment {
 
         if (dataList.size() != 0) {
             BluetoothData lastUpdate = dataList.get(dataList.size() - 1);
+            int bodyCode = lastUpdate.getCode();
 
-            tvTemp.setText(lastUpdate.getObjTemp());
-            tvHeart.setText(lastUpdate.getHeartRate());
-            tvSpO2.setText(lastUpdate.getSpO2());
+            if (bodyCode != 99) {
+                tvTemp.setText(lastUpdate.getObjTemp());
+                tvHeart.setText(lastUpdate.getHeartRate());
+                tvSpO2.setText(lastUpdate.getSpO2());
 
-            if (lastUpdate.getCode() == 0) {
-                tvMessage.setText(R.string.message_healthy);
-            } else if (lastUpdate.getCode() == 1) {
-                tvMessage.setText(R.string.message_rest);
-            } else if (lastUpdate.getCode() == 2) {
-                tvMessage.setText(R.string.message_hipotermia);
-            } else if (lastUpdate.getCode() == 3) {
-                tvMessage.setText(R.string.message_emergency);
+                if (lastUpdate.getCode() == 0) {
+                    tvMessage.setText(R.string.message_healthy);
+                } else if (lastUpdate.getCode() == 1) {
+                    tvMessage.setText(R.string.message_rest);
+                } else if (lastUpdate.getCode() == 2) {
+                    tvMessage.setText(R.string.message_hipotermia);
+                } else if (lastUpdate.getCode() == 3) {
+                    tvMessage.setText(R.string.message_emergency);
+                }
             }
         }
 
