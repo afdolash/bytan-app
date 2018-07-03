@@ -35,7 +35,6 @@ public class BluetoothActivity extends AppCompatActivity {
     public static final int REQUEST_ENABLE_BT = 1;
     private static final long SCAN_PERIOD = 10000;
 
-    private BluetoothLeAdapter mBluetoothLeAdapter;
     private BluetoothAdapter mBluetoothAdapter;
     private List<BluetoothDevice> mBluetoothDevices = new ArrayList<>();
     private boolean mScanning;
@@ -44,36 +43,11 @@ public class BluetoothActivity extends AppCompatActivity {
     private RecyclerView rcDevices;
     private TextView tvDiscover;
 
-    private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
-        @Override
-        public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (!mBluetoothDevices.contains(device)) {
-                        mBluetoothDevices.add(device);
-                        mBluetoothLeAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
-        }
-    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
-
-        mHandler = new Handler();
-        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
-        mBluetoothLeAdapter = new BluetoothLeAdapter(this, mBluetoothDevices);
-
-        tvDiscover = (TextView) findViewById(R.id.tv_discover);
-        rcDevices = (RecyclerView) findViewById(R.id.rc_devices);
-        rcDevices.setLayoutManager(new LinearLayoutManager(this));
-        rcDevices.setAdapter(mBluetoothLeAdapter);
 
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
@@ -82,12 +56,20 @@ public class BluetoothActivity extends AppCompatActivity {
             finish();
         }
 
+        mHandler = new Handler();
+        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+
         // Checks if Bluetooth is supported on the device.
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "Bluetooth is not supported.", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
+
+        tvDiscover = (TextView) findViewById(R.id.tv_discover);
+        rcDevices = (RecyclerView) findViewById(R.id.rc_devices);
+        rcDevices.setLayoutManager(new LinearLayoutManager(this));
 
         tvDiscover.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +82,9 @@ public class BluetoothActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Permission on Marsmellow
+        checkBTPermission();
     }
 
     @Override
@@ -112,6 +97,8 @@ public class BluetoothActivity extends AppCompatActivity {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
+
+        rcDevices.setAdapter(new BluetoothLeAdapter(this, mBluetoothDevices));
         scanLeDevice(true);
     }
 
@@ -143,7 +130,7 @@ public class BluetoothActivity extends AppCompatActivity {
                     mScanning = false;
                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     invalidateOptionsMenu();
-                    Toast.makeText(BluetoothActivity.this, "BLE size: " + mBluetoothLeAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BluetoothActivity.this, "BLE size: " + rcDevices.getAdapter().getItemCount(), Toast.LENGTH_SHORT).show();
                 }
             }, SCAN_PERIOD);
 
@@ -154,5 +141,35 @@ public class BluetoothActivity extends AppCompatActivity {
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
         }
         invalidateOptionsMenu();
+    }
+
+    private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
+        @Override
+        public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (!mBluetoothDevices.contains(device)) {
+                        mBluetoothDevices.add(device);
+                        rcDevices.getAdapter().notifyDataSetChanged();
+                    }
+                }
+            });
+        }
+    };
+
+    private void checkBTPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
+            int permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
+            permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
+            if (permissionCheck != 0) {
+                this.requestPermissions(new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                }, 1001); //Any number
+            }
+        }else{
+            Log.d(BLE_TAG, "CheckBTPermissions: No need to check permissions. SDK version < LOLLIPOP.");
+        }
     }
 }

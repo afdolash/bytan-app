@@ -1,4 +1,4 @@
-package com.pens.afdolash.bytan.main.group;
+package com.pens.afdolash.bytan.main.group.adapter;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,6 +18,7 @@ import com.abemart.wroup.common.listeners.ServiceConnectedListener;
 import com.abemart.wroup.service.WroupService;
 import com.pens.afdolash.bytan.R;
 import com.pens.afdolash.bytan.main.MainActivity;
+import com.pens.afdolash.bytan.main.group.MemberFragment;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.pens.afdolash.bytan.main.group;
+package com.pens.afdolash.bytan.main.group.dialog;
 
 import android.app.Dialog;
 import android.os.Bundle;

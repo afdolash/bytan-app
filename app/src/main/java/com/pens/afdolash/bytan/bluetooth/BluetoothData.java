@@ -11,14 +11,12 @@ public class BluetoothData implements Parcelable {
     private String ambTemp;
     private String objTemp;
     private String heartRate;
-    private String spO2;
     private int code;
 
-    public BluetoothData(String ambTemp, String objTemp, String heartRate, String spO2, int code) {
+    public BluetoothData(String ambTemp, String objTemp, String heartRate, int code) {
         this.ambTemp = ambTemp;
         this.objTemp = objTemp;
         this.heartRate = heartRate;
-        this.spO2 = spO2;
         this.code = code;
     }
 
@@ -32,10 +30,6 @@ public class BluetoothData implements Parcelable {
 
     public String getHeartRate() {
         return heartRate;
-    }
-
-    public String getSpO2() {
-        return spO2;
     }
 
     public int getCode() {
@@ -53,7 +47,6 @@ public class BluetoothData implements Parcelable {
         dest.writeString(this.ambTemp);
         dest.writeString(this.objTemp);
         dest.writeString(this.heartRate);
-        dest.writeString(this.spO2);
         dest.writeInt(this.code);
     }
 
@@ -61,7 +54,6 @@ public class BluetoothData implements Parcelable {
         this.ambTemp = in.readString();
         this.objTemp = in.readString();
         this.heartRate = in.readString();
-        this.spO2 = in.readString();
         this.code = in.readInt();
     }
 

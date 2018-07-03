@@ -11,7 +11,7 @@
 
         <ImageView
             android:id="@+id/img_people"
-            android:layout_width="100dp"
+            android:layout_width="75dp"
             android:layout_height="200dp"
             android:src="@drawable/ai_man_1"
             android:layout_alignParentRight="true"
@@ -27,19 +27,10 @@
             android:layout_marginRight="-50dp"
             android:layout_marginTop="150dp"/>
 
-        <ImageView
-            android:layout_width="113dp"
-            android:layout_height="113dp"
-            android:src="@drawable/xd_circle_gradient"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="-56dp"
-            android:layout_marginBottom="185dp"/>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="24dp"
-            android:paddingBottom="24dp"
             android:orientation="vertical">
 
             <TextView
@@ -53,17 +44,50 @@
                 android:layout_marginRight="24dp"
                 android:fontFamily="@font/seguisb"/>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rc_history"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/img_people"
-                android:layout_weight="1"
-                android:layout_marginTop="24dp"
-                android:paddingTop="24dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:clipToPadding="false"/>
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rc_history"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginTop="24dp"
+                    android:paddingTop="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="16dp"
+                    android:clipToPadding="false"/>
+
+                <LinearLayout
+                    android:id="@+id/ln_empty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:translationZ="99dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/xd_dashboard"
+                        android:tint="#9e9e9e"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No History"
+                        android:textSize="12sp"
+                        android:textColor="#9e9e9e"
+                        android:fontFamily="@font/seguisb"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
         </LinearLayout>
 

@@ -17,13 +17,14 @@
         android:layout_marginLeft="4dp">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_centerInParent="true"
             android:src="@drawable/xd_user_man"
             android:tint="@color/colorBlue"/>
 
         <ImageView
+            android:id="@+id/img_status"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:src="@drawable/xd_circle_gradient"/>
@@ -31,18 +32,17 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/tv_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="300M"
-        android:textSize="16sp"
-        android:fontFamily="@font/seguisb"/>
+        android:text="300m"/>
 
     <TextView
+        android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Lenovo A-7000"
         android:textSize="12sp"
-        android:fontFamily="@font/segoe"
         android:maxLength="13"/>
 
 </LinearLayout>

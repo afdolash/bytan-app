@@ -117,7 +117,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/segoe"
-                        android:text="Temperature"
+                        android:text="Body Temperature"
                         android:textColor="#9E9E9E"
                         android:textSize="12sp" />
 
@@ -202,6 +202,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tv_heater"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="--.--"
@@ -222,7 +223,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Temperature"
+                        android:text="Jacket Heater"
                         android:textSize="12sp"
                         android:textColor="#9E9E9E"
                         android:fontFamily="@font/segoe"/>
@@ -244,37 +245,30 @@
                     android:paddingBottom="24dp"
                     android:paddingLeft="24dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:text="Body Status"
+                        android:textSize="12sp"
+                        android:textColor="#9E9E9E"
+                        android:fontFamily="@font/segoe"/>
 
-                        <TextView
-                            android:id="@+id/tv_spO2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="--"
-                            android:textSize="32sp"
-                            android:fontFamily="@font/seguisb"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="4dp"
-                            android:text="%"
-                            android:textSize="16sp"
-                            android:textColor="#BDBDBD"
-                            android:fontFamily="@font/segoe"/>
-
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="UNIDENTIFIED"
+                        android:textSize="18sp"
+                        android:fontFamily="@font/seguisb"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Blood's Oxygen"
-                        android:textSize="12sp"
-                        android:textColor="#9E9E9E"
-                        android:fontFamily="@font/segoe"/>
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/segoe"
+                        android:text="See treatment"
+                        android:textColor="@color/colorBlue"
+                        android:textSize="10sp" />
 
                 </LinearLayout>
 

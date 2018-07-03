@@ -3,6 +3,7 @@ package com.pens.afdolash.bytan.main.group;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -23,6 +24,9 @@ import com.abemart.wroup.common.listeners.ServiceRegisteredListener;
 import com.abemart.wroup.service.WroupService;
 import com.pens.afdolash.bytan.R;
 import com.pens.afdolash.bytan.main.MainActivity;
+import com.pens.afdolash.bytan.main.group.adapter.WifiDirectAdapter;
+import com.pens.afdolash.bytan.main.group.dialog.GroupCreationDialog;
+import com.pens.afdolash.bytan.main.group.dialog.GroupDiscoveryDialog;
 
 import java.util.List;
 
@@ -64,6 +68,8 @@ public class GroupFragment extends Fragment implements GroupCreationDialog.Group
         preferences = getActivity().getSharedPreferences(GROUP_PREF, Context.MODE_PRIVATE);
         editor = preferences.edit();
 
+        final WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
         wroupClient = ((MainActivity) getActivity()).mWroupClient;
         wroupService = ((MainActivity) getActivity()).mWroupService;
 
@@ -73,6 +79,14 @@ public class GroupFragment extends Fragment implements GroupCreationDialog.Group
                 createGroupDialog = new GroupCreationDialog();
                 createGroupDialog.setGroupCreationListener(GroupFragment.this);
                 createGroupDialog.show(getChildFragmentManager(), GroupCreationDialog.class.getSimpleName());
+
+                if (!wifiManager.isWifiEnabled()) {
+                    wifiManager.setWifiEnabled(true);
+                }
+
+                if (!wifiManager.isP2pSupported()) {
+                    Toast.makeText(getContext(), "Sorry, you can\'t use this feature.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -82,6 +96,14 @@ public class GroupFragment extends Fragment implements GroupCreationDialog.Group
                 discoverGroupDialog = new GroupDiscoveryDialog();
                 discoverGroupDialog.setGroupDiscoveryListener(GroupFragment.this);
                 discoverGroupDialog.show(getChildFragmentManager(), GroupDiscoveryDialog.class.getSimpleName());
+
+                if (!wifiManager.isWifiEnabled()) {
+                    wifiManager.setWifiEnabled(true);
+                }
+
+                if (!wifiManager.isP2pSupported()) {
+                    Toast.makeText(getContext(), "Sorry, you can\'t use this feature.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

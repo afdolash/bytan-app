@@ -11,4 +11,10 @@
 
     <color name="colorText">#707070</color>
     <color name="colorTextUnselected">#757575</color>
+
+    <color name="statusEmergency">#C62828</color>
+    <color name="statusHyphothermia">#D84315</color>
+    <color name="statusRest">#00838F</color>
+    <color name="statusHealthy">#2962FF</color>
+    <color name="statusIdentified">#9e9e9e</color>
 </resources>

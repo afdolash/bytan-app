@@ -78,7 +78,12 @@ public class FocusHeartFragment extends Fragment {
 
                 // Send state ACTIVE to Arduino
                 final Handler handler = new Handler();
-                ((MainActivity)getActivity()).changeState(7);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((MainActivity)getActivity()).changeState("!!7");
+                    }
+                }, 5000);
 
                 updateBodyData();
             }

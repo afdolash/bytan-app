@@ -45,7 +45,7 @@ public class DashboardFragment extends Fragment {
 
     private SharedPreferences prefUser, prefDevice;
 
-    private TextView tvName, tvAddress, tvMessage, tvTemp, tvHeart, tvSpO2;
+    private TextView tvName, tvAddress, tvMessage, tvTemp, tvHeart, tvHeater, tvStatus;
     private ImageView imgStatus;
     private LinearLayout lnTemperature, lnHeart;
 
@@ -74,7 +74,8 @@ public class DashboardFragment extends Fragment {
         tvMessage = (TextView) view.findViewById(R.id.tv_message);
         tvTemp = (TextView) view.findViewById(R.id.tv_temperature);
         tvHeart = (TextView) view.findViewById(R.id.tv_heart);
-        tvSpO2 = (TextView) view.findViewById(R.id.tv_spO2);
+        tvHeater = (TextView) view.findViewById(R.id.tv_heater);
+        tvStatus = (TextView) view.findViewById(R.id.tv_status);
         imgStatus = (ImageView) view.findViewById(R.id.img_status);
         lnHeart = (LinearLayout) view.findViewById(R.id.ln_heart);
         lnTemperature = (LinearLayout) view.findViewById(R.id.ln_temperature);
@@ -93,7 +94,7 @@ public class DashboardFragment extends Fragment {
         tvName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity) getActivity()).changeState(8);
+                ((MainActivity) getActivity()).changeState("!!8");
             }
         });
 
@@ -102,7 +103,7 @@ public class DashboardFragment extends Fragment {
             public void onClick(View view) {
                 ((MainActivity) getActivity()).focusFragment = new FocusHeartFragment();
                 ((MainActivity) getActivity()).loadFragment(((MainActivity) getActivity()).focusFragment);
-                ((MainActivity) getActivity()).changeState(9);
+                ((MainActivity) getActivity()).changeState("!!9");
             }
         });
 
@@ -111,7 +112,7 @@ public class DashboardFragment extends Fragment {
             public void onClick(View view) {
                 ((MainActivity) getActivity()).focusFragment = new FocusTempFragment();
                 ((MainActivity) getActivity()).loadFragment(((MainActivity) getActivity()).focusFragment);
-                ((MainActivity) getActivity()).changeState(9);
+                ((MainActivity) getActivity()).changeState("!!9");
             }
         });
 
@@ -137,15 +138,19 @@ public class DashboardFragment extends Fragment {
             if (bodyCode != 99) {
                 tvTemp.setText(lastUpdate.getObjTemp());
                 tvHeart.setText(lastUpdate.getHeartRate());
-                tvSpO2.setText(lastUpdate.getSpO2());
+                tvHeater.setText(lastUpdate.getAmbTemp());
 
                 if (lastUpdate.getCode() == 0) {
+                    tvStatus.setText("HEALTY");
                     tvMessage.setText(R.string.message_healthy);
                 } else if (lastUpdate.getCode() == 1) {
+                    tvStatus.setText("REST");
                     tvMessage.setText(R.string.message_rest);
                 } else if (lastUpdate.getCode() == 2) {
+                    tvStatus.setText("HYPOTHERMIA");
                     tvMessage.setText(R.string.message_hipotermia);
                 } else if (lastUpdate.getCode() == 3) {
+                    tvStatus.setText("EMERGENCY");
                     tvMessage.setText(R.string.message_emergency);
                 }
             }

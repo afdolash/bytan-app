@@ -3,32 +3,40 @@ package com.pens.afdolash.bytan.main.group;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.abemart.wroup.client.WroupClient;
-import com.abemart.wroup.common.WroupDevice;
-import com.abemart.wroup.common.listeners.ClientConnectedListener;
-import com.abemart.wroup.common.listeners.ClientDisconnectedListener;
-import com.abemart.wroup.common.listeners.DataReceivedListener;
 import com.abemart.wroup.common.messages.MessageWrapper;
 import com.abemart.wroup.service.WroupService;
 import com.pens.afdolash.bytan.R;
+import com.pens.afdolash.bytan.bluetooth.BluetoothData;
 import com.pens.afdolash.bytan.main.MainActivity;
+import com.pens.afdolash.bytan.main.group.adapter.MemberAdapter;
+import com.pens.afdolash.bytan.main.group.model.MemberData;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import static com.pens.afdolash.bytan.intro.IntroductionActivity.USER_PREF;
 import static com.pens.afdolash.bytan.main.group.GroupFragment.EXTRAS_GROUP_IS_OWNER;
 import static com.pens.afdolash.bytan.main.group.GroupFragment.EXTRAS_GROUP_NAME;
 import static com.pens.afdolash.bytan.main.group.GroupFragment.EXTRAS_GROUP_OWNER;
@@ -37,10 +45,10 @@ import static com.pens.afdolash.bytan.main.group.GroupFragment.GROUP_PREF;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MemberFragment extends Fragment implements DataReceivedListener, ClientConnectedListener, ClientDisconnectedListener {
+public class MemberFragment extends Fragment {
 
-    private SharedPreferences preferences;
-    private SharedPreferences.Editor editor;
+    private SharedPreferences prefGroup, prefUser;
+    private SharedPreferences.Editor editGroup;
     private String groupName;
     private String groupOwner;
     private boolean isGroupOwner = false;
@@ -48,14 +56,27 @@ public class MemberFragment extends Fragment implements DataReceivedListener, Cl
     private WroupService wroupService;
     private WroupClient wroupClient;
 
-    private Button btnSend;
-    private EditText etMessage;
     private FrameLayout frBottomSheet;
     private CardView cardBottomSheet;
-    private RelativeLayout rvLocation;
-    private TextView tvNameGroup, tvNameMaster, tvLeave;
+    private RelativeLayout rvLocation, rvBroadcast;
+    private TextView tvNameGroup, tvNameMaster;
+    private ImageView imgLeave;
     private RecyclerView rcMember;
     private BottomSheetBehavior sheetBehavior;
+
+    private Handler handler = new Handler();
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            getMemberData();
+        }
+    };
+
+    private DisplayMetrics metrics;
+
+    private double myLongitude, myLatitude; //My longitude and latitude
+    private double mapLongitude = 180 - myLongitude;  //Set maximum longitude
+    private double mapLatitude = myLatitude - 90; //Set maximum latitude
 
     public MemberFragment() {
         // Required empty public constructor
@@ -68,17 +89,23 @@ public class MemberFragment extends Fragment implements DataReceivedListener, Cl
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_member, container, false);
 
-        btnSend = (Button) view.findViewById(R.id.btn_send);
-        etMessage = (EditText) view.findViewById(R.id.et_message);
         frBottomSheet = (FrameLayout) view.findViewById(R.id.fr_bottom_sheet);
         cardBottomSheet = (CardView) view.findViewById(R.id.card_bottom_sheet);
         rvLocation = (RelativeLayout) view.findViewById(R.id.rv_location);
+        rvBroadcast = (RelativeLayout) view.findViewById(R.id.rv_broadcast);
         tvNameGroup = (TextView) view.findViewById(R.id.tv_name_group);
         tvNameMaster = (TextView) view.findViewById(R.id.tv_name_master);
-        tvLeave = (TextView) view.findViewById(R.id.tv_leave);
+        imgLeave = (ImageView) view.findViewById(R.id.img_leave);
         rcMember = (RecyclerView) view.findViewById(R.id.rc_member);
 
         sheetBehavior = BottomSheetBehavior.from(frBottomSheet);
+
+        metrics = ((MainActivity) getActivity()).metrics;
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        rcMember.setLayoutManager(layoutManager);
+        rcMember.setItemAnimator(new DefaultItemAnimator());
+        rcMember.setAdapter(new MemberAdapter(getContext(), ((MainActivity) getActivity()).getMemberList()));
 
         cardBottomSheet.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,96 +118,195 @@ public class MemberFragment extends Fragment implements DataReceivedListener, Cl
             }
         });
 
-        preferences = getActivity().getSharedPreferences(GROUP_PREF, Context.MODE_PRIVATE);
-        editor = preferences.edit();
+        prefUser = getContext().getSharedPreferences(USER_PREF, Context.MODE_PRIVATE);
 
-        groupName = preferences.getString(EXTRAS_GROUP_NAME, null);
-        groupOwner = preferences.getString(EXTRAS_GROUP_OWNER, null);
-        isGroupOwner = preferences.getBoolean(EXTRAS_GROUP_IS_OWNER, false);
+        prefGroup = getActivity().getSharedPreferences(GROUP_PREF, Context.MODE_PRIVATE);
+        editGroup = prefGroup.edit();
+
+        groupName = prefGroup.getString(EXTRAS_GROUP_NAME, null);
+        groupOwner = prefGroup.getString(EXTRAS_GROUP_OWNER, null);
+        isGroupOwner = prefGroup.getBoolean(EXTRAS_GROUP_IS_OWNER, false);
 
         if (isGroupOwner) {
             wroupService = ((MainActivity) getActivity()).mWroupService;
-            wroupService.setDataReceivedListener(this);
-            wroupService.setClientDisconnectedListener(this);
-            wroupService.setClientConnectedListener(this);
+            wroupService.setDataReceivedListener((MainActivity) getActivity());
+            wroupService.setClientDisconnectedListener((MainActivity) getActivity());
+            wroupService.setClientConnectedListener((MainActivity) getActivity());
         } else {
             wroupClient = ((MainActivity) getActivity()).mWroupClient;
-            wroupClient.setDataReceivedListener(this);
-            wroupClient.setClientDisconnectedListener(this);
-            wroupClient.setClientConnectedListener(this);
+            wroupClient.setDataReceivedListener((MainActivity) getActivity());
+            wroupClient.setClientDisconnectedListener((MainActivity) getActivity());
+            wroupClient.setClientConnectedListener((MainActivity) getActivity());
         }
 
-        btnSend.setOnClickListener(new View.OnClickListener() {
+        rvBroadcast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String messageStr = etMessage.getText().toString();
-                if (messageStr != null && !messageStr.isEmpty()) {
-                    MessageWrapper normalMessage = new MessageWrapper();
-                    normalMessage.setMessage(etMessage.getText().toString());
-                    normalMessage.setMessageType(MessageWrapper.MessageType.NORMAL);
-
-                    if (isGroupOwner) {
-                        wroupService.sendMessageToAllClients(normalMessage);
-                    } else {
-                        wroupClient.sendMessageToAllClients(normalMessage);
-                    }
-
-                    etMessage.setText("");
-                }
+                sendDataFirstTime();
             }
         });
 
-        tvLeave.setOnClickListener(new View.OnClickListener() {
+        imgLeave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ((MainActivity) getActivity()).unregisterReceiver(((MainActivity) getActivity()).mWifiDirectReceiver);
                 if (wroupService != null) wroupService.disconnect();
                 if (wroupClient != null) wroupClient.disconnect();
 
-                editor.putString(EXTRAS_GROUP_NAME, null);
-                editor.putString(EXTRAS_GROUP_OWNER, null);
-                editor.putBoolean(EXTRAS_GROUP_IS_OWNER, false);
-                editor.commit();
+                editGroup.putString(EXTRAS_GROUP_NAME, null);
+                editGroup.putString(EXTRAS_GROUP_OWNER, null);
+                editGroup.putBoolean(EXTRAS_GROUP_IS_OWNER, false);
+                editGroup.commit();
 
                 ((MainActivity) getActivity()).destroyFragment(MemberFragment.this);
                 ((MainActivity) getActivity()).loadFragment(new GroupFragment());
             }
         });
 
+        // Create my view on location relative view
+        View child = getLayoutInflater().inflate(R.layout.item_user_man, null);
+        child.setX(posX(myLongitude) - 85f);
+        child.setY(posY(myLatitude) - 125f);
+
+        ImageView imgStatus = (ImageView) child.findViewById(R.id.img_status);
+        TextView tvDistance = (TextView) child.findViewById(R.id.tv_distance);
+        TextView tvName = (TextView) child.findViewById(R.id.tv_name);
+
+        imgStatus.setVisibility(View.GONE);
+        tvDistance.setVisibility(View.GONE);
+        tvName.setText("Me");
+
+        rvLocation.addView(child);
+
+        // Send data first time when connected
+        sendDataFirstTime();
+
+        // Update data repeatly
+        updateMemberData();
+
         return view;
     }
 
     @Override
-    public void onClientConnected(final WroupDevice wroupDevice) {
+    public void onDestroy() {
+        handler.removeCallbacks(runnable);
+        super.onDestroy();
+    }
+
+    private void getMemberData() {
+//        rcMember.setAdapter(new MemberAdapter(getContext(), ((MainActivity) getActivity()).getMemberList()));
+        rcMember.getAdapter().notifyDataSetChanged();
+
+        for (int i = rvLocation.getChildCount(); i > 2; i--) {
+            rvLocation.removeViewAt(i - 1);
+        }
+
+        List<MemberData> memberList = ((MainActivity) getActivity()).getMemberList();
+        for (MemberData member : memberList) {
+            View child = getLayoutInflater().inflate(R.layout.item_user_man, null);
+            child.setX(posX(Double.parseDouble(member.getLongitude())) - 85f);
+            child.setY(posY(Double.parseDouble(member.getLatitude())) - 135f);
+
+            ImageView imgStatus = (ImageView) child.findViewById(R.id.img_status);
+            TextView tvDistance = (TextView) child.findViewById(R.id.tv_distance);
+            TextView tvName = (TextView) child.findViewById(R.id.tv_name);
+
+            tvName.setText(member.getDevice().getDeviceName());
+
+            Location memberLoc = new Location("");
+            memberLoc.setLatitude(Double.parseDouble(member.getLatitude()));
+            memberLoc.setLongitude(Double.parseDouble(member.getLongitude()));
+
+            Location myLoc = new Location("");
+            myLoc.setLatitude(myLatitude);
+            myLoc.setLongitude(myLongitude);
+
+            tvDistance.setText((int)myLoc.distanceTo(memberLoc) +"m");
+
+            switch (Integer.parseInt(member.getCode())) {
+                case 0:
+                    imgStatus.setColorFilter(ContextCompat.getColor(getContext(), R.color.statusHealthy), android.graphics.PorterDuff.Mode.SRC_IN);
+                    break;
+                case 1:
+                    imgStatus.setColorFilter(ContextCompat.getColor(getContext(), R.color.statusRest), android.graphics.PorterDuff.Mode.SRC_IN);
+                    break;
+                case 2:
+                    imgStatus.setColorFilter(ContextCompat.getColor(getContext(), R.color.statusHyphothermia), android.graphics.PorterDuff.Mode.SRC_IN);
+                    break;
+                case 3:
+                    imgStatus.setColorFilter(ContextCompat.getColor(getContext(), R.color.statusEmergency), android.graphics.PorterDuff.Mode.SRC_IN);
+                    break;
+            }
+
+            rvLocation.addView(child);
+        }
+
+        handler.postDelayed(runnable, 1000);
+    }
+
+    private void updateMemberData() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getActivity(), wroupDevice.getDeviceName() +" is connected.", Toast.LENGTH_LONG).show();
-                Log.i("Member", wroupDevice.getDeviceName() +" is connected.");
+                getMemberData();
             }
         });
     }
 
-    @Override
-    public void onClientDisconnected(final WroupDevice wroupDevice) {
-       getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getActivity(), wroupDevice.getDeviceName() +" is disconnected.", Toast.LENGTH_LONG).show();
-                Log.i("Member", wroupDevice.getDeviceName() +" is disconnected.");
+    private void sendDataFirstTime() {
+        // Check if location is available
+        myLatitude = ((MainActivity) getActivity()).tracker.getLatitude();
+        myLongitude = ((MainActivity) getActivity()).tracker.getLongitude();
+
+        String messageStr = null;
+
+        List<BluetoothData> dataList = ((MainActivity) getActivity()).getDataList();
+
+        if (dataList.size() > 0) {
+            BluetoothData lastUpdate = dataList.get(dataList.size() - 1);
+            messageStr = "{"
+                    + "heart : "+ lastUpdate.getHeartRate() +", "
+                    + "obj : "+ lastUpdate.getObjTemp() +", "
+                    + "amb : "+ lastUpdate.getAmbTemp() +", "
+                    + "code : "+ lastUpdate.getCode() +", "
+                    + "latitude : "+ myLatitude +", "
+                    + "longitude : "+ myLongitude +", "
+                    + "timestamp : "+ Calendar.getInstance().getTime()
+                    + "}";
+        } else {
+            messageStr = "{"
+                    + "heart : "+ 0.0 +", "
+                    + "obj : "+ 0.0 +", "
+                    + "amb : "+ 0.0 +", "
+                    + "code : "+ 0 +", "
+                    + "latitude : "+ myLatitude +", "
+                    + "longitude : "+ myLongitude +", "
+                    + "timestamp : "+ new SimpleDateFormat("HHmmss").format(new Date())
+                    + "}";
+        }
+
+        if (!messageStr.isEmpty()) {
+            MessageWrapper normalMessage = new MessageWrapper();
+            normalMessage.setMessage(messageStr);
+            normalMessage.setMessageType(MessageWrapper.MessageType.NORMAL);
+
+            if (isGroupOwner) {
+                ((MainActivity) getActivity()).mWroupService.sendMessageToAllClients(normalMessage);
+            } else {
+                ((MainActivity) getActivity()).mWroupClient.sendMessageToAllClients(normalMessage);
             }
-        });
+        }
     }
 
-    @Override
-    public void onDataReceived(final MessageWrapper messageWrapper) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ((MainActivity) getActivity()).messageReceiver.setMessage(getActivity(), messageWrapper, MessageReceiver.TYPE_NORMAL);
+    private float posX(Double longitude) {
+        longitude = longitude - myLongitude;
+        float x = (float) ((metrics.widthPixels / 2) * ((longitude / mapLongitude) * 500000)) + (metrics.widthPixels / 2);
+        return  x > metrics.widthPixels ? metrics.widthPixels : x;
+    }
 
-                messageWrapper.getMessage().toString();
-                Toast.makeText(getActivity(), messageWrapper.getMessage().toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
+    private float posY(Double latitude) {
+        latitude = myLatitude - latitude;
+        float y = (float) (((metrics.heightPixels / 2) * ((latitude / mapLatitude) * 500000)) + (metrics.heightPixels / 2));
+        return  y > metrics.heightPixels ? metrics.heightPixels : y;
     }
 }

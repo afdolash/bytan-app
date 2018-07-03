@@ -59,7 +59,7 @@ public class IntroductionActivity extends AppCompatActivity {
 
                 editor.putString(EXTRAS_USER_NAME, name);
                 editor.putString(EXTRAS_USER_GENDER, gender);
-                editor.commit();
+                editor.apply();
 
                 Intent intent = new Intent(IntroductionActivity.this, BluetoothActivity.class);
                 startActivity(intent);
