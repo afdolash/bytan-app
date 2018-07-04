@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -59,6 +60,7 @@ public class MemberFragment extends Fragment {
     private FrameLayout frBottomSheet;
     private CardView cardBottomSheet;
     private RelativeLayout rvLocation, rvBroadcast;
+    private LinearLayout lnEmpty;
     private TextView tvNameGroup, tvNameMaster;
     private ImageView imgLeave;
     private RecyclerView rcMember;
@@ -93,6 +95,7 @@ public class MemberFragment extends Fragment {
         cardBottomSheet = (CardView) view.findViewById(R.id.card_bottom_sheet);
         rvLocation = (RelativeLayout) view.findViewById(R.id.rv_location);
         rvBroadcast = (RelativeLayout) view.findViewById(R.id.rv_broadcast);
+        lnEmpty = (LinearLayout) view.findViewById(R.id.ln_empty);
         tvNameGroup = (TextView) view.findViewById(R.id.tv_name_group);
         tvNameMaster = (TextView) view.findViewById(R.id.tv_name_master);
         imgLeave = (ImageView) view.findViewById(R.id.img_leave);
@@ -184,6 +187,8 @@ public class MemberFragment extends Fragment {
         // Update data repeatly
         updateMemberData();
 
+        toggleEmptyMember();
+
         return view;
     }
 
@@ -240,6 +245,7 @@ public class MemberFragment extends Fragment {
 
             rvLocation.addView(child);
         }
+        toggleEmptyMember();
 
         handler.postDelayed(runnable, 1000);
     }
@@ -295,6 +301,20 @@ public class MemberFragment extends Fragment {
             } else {
                 ((MainActivity) getActivity()).mWroupClient.sendMessageToAllClients(normalMessage);
             }
+        }
+    }
+
+    /**
+     * Toggling list and empty notes view
+     */
+    private void toggleEmptyMember() {
+        // You can check notesList.size() > 0
+
+        if (((MainActivity) getActivity()).getMemberList().size() > 0) {
+            lnEmpty.setVisibility(View.GONE);
+        }
+        else {
+            lnEmpty.setVisibility(View.VISIBLE);
         }
     }
 

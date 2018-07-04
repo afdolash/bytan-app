@@ -1,141 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorWhite"
     tools:context="com.pens.afdolash.bytan.main.profile.DescriptionActivity">
 
-    <TextView
-        android:id="@+id/tv_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="42dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:text="22 February 2018"
-        android:textSize="10sp"
-        android:fontFamily="@font/segoe" />
-
-    <TextView
-        android:id="@+id/tv_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:text="Mild Hypothermia"
-        android:textSize="22sp"
-        android:fontFamily="@font/seguisb"/>
-
-    <TextView
-        android:id="@+id/tv_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginTop="30dp"
-        android:text="Sorry, I am very sad when you are infected with hypothermia today at Mount Semeru, Surabaya. Do not forget to eat healthy food and rest until your health improves. Keep the spirit in doing your daily activities :)"
-        android:textSize="12sp"
-        android:fontFamily="@font/segoe"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:text="Body Condition When Attacked"
-        android:textSize="10sp"
-        android:fontFamily="@font/segoe"/>
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <android.support.v7.widget.CardView
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="42dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:text="22 February 2018"
+            android:textSize="12sp"
+            android:fontFamily="@font/segoe" />
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:text="Mild Hypothermia"
+            android:textSize="24sp"
+            android:fontFamily="@font/seguisb"/>
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="30dp"
+            android:text="Sorry, I am very sad when you are infected with hypothermia today at Mount Semeru, Surabaya. Do not forget to eat healthy food and rest until your health improves. Keep the spirit in doing your daily activities :)"
+            android:fontFamily="@font/segoe"/>
+
+        <TextView
+            android:id="@+id/tv_treatment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="30dp"
+            android:text="First,\nRemove or hide the patient from a cold environment, keeping the head and neck closed."
+            android:fontFamily="@font/segoe"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:text="Body Condition When Attacked"
+            android:textSize="12sp"
+            android:fontFamily="@font/segoe"/>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="53dp"
-            android:layout_weight="1"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:layout_marginBottom="10dp"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="7dp">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="24dp"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-4dp"
-                android:orientation="horizontal"
-                android:gravity="bottom"
-                android:layout_gravity="center">
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="53dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginBottom="10dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="7dp">
 
-                <TextView
-                    android:id="@+id/tv_temperature"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="37"
-                    android:textSize="32sp"
-                    android:fontFamily="@font/seguisb"/>
+                    android:layout_marginTop="-4dp"
+                    android:orientation="horizontal"
+                    android:gravity="bottom"
+                    android:layout_gravity="center">
 
-                <TextView
+                    <TextView
+                        android:id="@+id/tv_temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="37"
+                        android:textSize="32sp"
+                        android:fontFamily="@font/seguisb"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="C"
+                        android:textColor="#BDBDBD"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/seguisb"
+                        android:layout_marginLeft="4dp"/>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="53dp"
+                android:layout_weight="1"
+                android:layout_marginRight="6dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginBottom="10dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="7dp">
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="C"
-                    android:textColor="#BDBDBD"
-                    android:textSize="12sp"
-                    android:fontFamily="@font/seguisb"
-                    android:layout_marginLeft="4dp"/>
+                    android:layout_marginTop="-4dp"
+                    android:orientation="horizontal"
+                    android:gravity="bottom"
+                    android:layout_gravity="center">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_heart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="62"
+                        android:textSize="32sp"
+                        android:fontFamily="@font/seguisb"/>
 
-        </android.support.v7.widget.CardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="bpm"
+                        android:textColor="#BDBDBD"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/seguisb"
+                        android:layout_marginLeft="4dp"/>
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="53dp"
-            android:layout_weight="1"
-            android:layout_marginRight="6dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginBottom="10dp"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="7dp">
+                </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-4dp"
-                android:orientation="horizontal"
-                android:gravity="bottom"
-                android:layout_gravity="center">
+            </android.support.v7.widget.CardView>
 
-                <TextView
-                    android:id="@+id/tv_heart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="62"
-                    android:textSize="32sp"
-                    android:fontFamily="@font/seguisb"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="bpm"
-                    android:textColor="#BDBDBD"
-                    android:textSize="12sp"
-                    android:fontFamily="@font/seguisb"
-                    android:layout_marginLeft="4dp"/>
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
+        </LinearLayout>
 
     </LinearLayout>
     
-</LinearLayout>
+</ScrollView>

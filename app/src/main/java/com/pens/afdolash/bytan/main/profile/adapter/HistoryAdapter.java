@@ -73,7 +73,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, DescriptionActivity.class);
-                intent.putExtra(DATE_EXTRAS, date);
+                intent.putExtra(DATE_EXTRAS, history.getTimestamp());
                 intent.putExtra(STATUS_EXTRAS, holder.tvStatus.getText());
                 intent.putExtra(LAT_EXTRAS, history.getLatitude());
                 intent.putExtra(LNG_EXTRAS, history.getLongitude());
@@ -88,7 +88,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     public int getItemCount() {
         return histories.size();
     }
-
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 

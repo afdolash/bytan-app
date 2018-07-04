@@ -236,6 +236,7 @@
                     android:background="#e0e0e0"/>
 
                 <LinearLayout
+                    android:id="@+id/ln_treatment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -262,13 +263,15 @@
                         android:fontFamily="@font/seguisb"/>
 
                     <TextView
+                        android:id="@+id/tv_label_treatment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:fontFamily="@font/segoe"
                         android:text="See treatment"
                         android:textColor="@color/colorBlue"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 

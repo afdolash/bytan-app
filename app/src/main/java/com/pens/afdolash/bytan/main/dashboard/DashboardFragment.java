@@ -45,9 +45,9 @@ public class DashboardFragment extends Fragment {
 
     private SharedPreferences prefUser, prefDevice;
 
-    private TextView tvName, tvAddress, tvMessage, tvTemp, tvHeart, tvHeater, tvStatus;
+    private TextView tvName, tvAddress, tvMessage, tvTemp, tvHeart, tvHeater, tvStatus, tvLabelTreatment;
     private ImageView imgStatus;
-    private LinearLayout lnTemperature, lnHeart;
+    private LinearLayout lnTemperature, lnHeart, lnTreatment;
 
     private Handler handler = new Handler();
     private final Runnable runnable = new Runnable() {
@@ -76,9 +76,11 @@ public class DashboardFragment extends Fragment {
         tvHeart = (TextView) view.findViewById(R.id.tv_heart);
         tvHeater = (TextView) view.findViewById(R.id.tv_heater);
         tvStatus = (TextView) view.findViewById(R.id.tv_status);
+        tvLabelTreatment = (TextView) view.findViewById(R.id.tv_label_treatment);
         imgStatus = (ImageView) view.findViewById(R.id.img_status);
         lnHeart = (LinearLayout) view.findViewById(R.id.ln_heart);
         lnTemperature = (LinearLayout) view.findViewById(R.id.ln_temperature);
+        lnTreatment = (LinearLayout) view.findViewById(R.id.ln_treatment);
 
         // Get user data from shared preference
         prefUser = getContext().getSharedPreferences(USER_PREF, Context.MODE_PRIVATE);
@@ -141,15 +143,19 @@ public class DashboardFragment extends Fragment {
                 tvHeater.setText(lastUpdate.getAmbTemp());
 
                 if (lastUpdate.getCode() == 0) {
+                    tvLabelTreatment.setVisibility(View.VISIBLE);
                     tvStatus.setText("HEALTY");
                     tvMessage.setText(R.string.message_healthy);
                 } else if (lastUpdate.getCode() == 1) {
+                    tvLabelTreatment.setVisibility(View.VISIBLE);
                     tvStatus.setText("REST");
                     tvMessage.setText(R.string.message_rest);
                 } else if (lastUpdate.getCode() == 2) {
+                    tvLabelTreatment.setVisibility(View.VISIBLE);
                     tvStatus.setText("HYPOTHERMIA");
                     tvMessage.setText(R.string.message_hipotermia);
                 } else if (lastUpdate.getCode() == 3) {
+                    tvLabelTreatment.setVisibility(View.VISIBLE);
                     tvStatus.setText("EMERGENCY");
                     tvMessage.setText(R.string.message_emergency);
                 }

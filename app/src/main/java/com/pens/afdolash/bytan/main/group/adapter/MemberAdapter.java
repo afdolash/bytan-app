@@ -51,7 +51,9 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MyViewHold
         String date = new SimpleDateFormat("HHmmss").format(new Date());
         int timestamp = Integer.parseInt(date) - Integer.parseInt(member.getTimestamp());
 
-        if (timestamp > 59) {
+        if (timestamp / 60 > 59) {
+            holder.tvTimestamp.setText(timestamp / 3600 +" hours ago");
+        }else if (timestamp > 59) {
             holder.tvTimestamp.setText(timestamp / 60 +" minutes ago");
         } else {
             holder.tvTimestamp.setText(timestamp +" seconds ago");

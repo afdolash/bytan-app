@@ -177,6 +177,9 @@ public class MainActivity extends AppCompatActivity implements DataReceivedListe
                         focusFragment = null;
                         fragment = new DashboardFragment();
                         loadFragment(fragment);
+
+                        // Send state ACTIVE to Arduino
+                        changeState("!!8");
                     }
                     return true;
                 case R.id.nav_group:
@@ -187,6 +190,9 @@ public class MainActivity extends AppCompatActivity implements DataReceivedListe
                         isGroupOwner = prefGroup.getBoolean(EXTRAS_GROUP_IS_OWNER, false);
                         fragment = groupName != null ? new MemberFragment() : new GroupFragment();
                         loadFragment(fragment);
+
+                        // Send state ACTIVE to Arduino
+                        changeState("!!8");
                     }
                     return true;
                 case R.id.nav_profile:
@@ -195,6 +201,9 @@ public class MainActivity extends AppCompatActivity implements DataReceivedListe
                         focusFragment = null;
                         fragment = new ProfileFragment();
                         loadFragment(fragment);
+
+                        // Send state ACTIVE to Arduino
+                        changeState("!!8");
                     }
                     return true;
             }
