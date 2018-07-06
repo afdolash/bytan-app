@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pens.afdolash.bytan.R;
+import com.pens.afdolash.bytan.main.MainActivity;
 
 import static com.pens.afdolash.bytan.intro.IntroductionActivity.EXTRAS_USER_GENDER;
 import static com.pens.afdolash.bytan.intro.IntroductionActivity.USER_PREF;

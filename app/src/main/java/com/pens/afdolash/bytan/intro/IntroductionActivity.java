@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 
 import com.pens.afdolash.bytan.R;
 import com.pens.afdolash.bytan.bluetooth.BluetoothActivity;
+import com.pens.afdolash.bytan.main.MainActivity;
 
 public class IntroductionActivity extends AppCompatActivity {
     public static final String USER_PREF = "USER_PREF";

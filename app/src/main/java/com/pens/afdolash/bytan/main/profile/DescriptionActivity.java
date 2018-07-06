@@ -1,6 +1,5 @@
 package com.pens.afdolash.bytan.main.profile;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +10,7 @@ import com.pens.afdolash.bytan.R;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 
 public class DescriptionActivity extends AppCompatActivity {
     public final static String DATE_EXTRAS = "DATE_EXTRAS";
@@ -87,6 +87,7 @@ public class DescriptionActivity extends AppCompatActivity {
             tvTreatment.setVisibility(View.GONE);
         }
     }
+
 
     /**
      * Formatting timestamp to `dd MM  yyyy` format

@@ -29,6 +29,10 @@ import com.pens.afdolash.bytan.bluetooth.BluetoothData;
 import com.pens.afdolash.bytan.main.MainActivity;
 import com.pens.afdolash.bytan.main.dashboard.focus.FocusHeartFragment;
 import com.pens.afdolash.bytan.main.dashboard.focus.FocusTempFragment;
+import com.pens.afdolash.bytan.main.dashboard.treatment.EmergencyFragment;
+import com.pens.afdolash.bytan.main.dashboard.treatment.HyphoFragment;
+import com.pens.afdolash.bytan.main.dashboard.treatment.NormalFragment;
+import com.pens.afdolash.bytan.main.dashboard.treatment.RestFragment;
 
 import java.util.List;
 
@@ -46,7 +50,7 @@ public class DashboardFragment extends Fragment {
     private SharedPreferences prefUser, prefDevice;
 
     private TextView tvName, tvAddress, tvMessage, tvTemp, tvHeart, tvHeater, tvStatus, tvLabelTreatment;
-    private ImageView imgStatus;
+    private ImageView imgRefresh;
     private LinearLayout lnTemperature, lnHeart, lnTreatment;
 
     private Handler handler = new Handler();
@@ -77,7 +81,7 @@ public class DashboardFragment extends Fragment {
         tvHeater = (TextView) view.findViewById(R.id.tv_heater);
         tvStatus = (TextView) view.findViewById(R.id.tv_status);
         tvLabelTreatment = (TextView) view.findViewById(R.id.tv_label_treatment);
-        imgStatus = (ImageView) view.findViewById(R.id.img_status);
+        imgRefresh = (ImageView) view.findViewById(R.id.img_refresh);
         lnHeart = (LinearLayout) view.findViewById(R.id.ln_heart);
         lnTemperature = (LinearLayout) view.findViewById(R.id.ln_temperature);
         lnTreatment = (LinearLayout) view.findViewById(R.id.ln_treatment);
@@ -93,9 +97,10 @@ public class DashboardFragment extends Fragment {
         tvName.setText("Welcome back "+ name +"!");
         tvAddress.setText(address);
 
-        tvName.setOnClickListener(new View.OnClickListener() {
+        imgRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(getContext(), "Refreshing...", Toast.LENGTH_SHORT).show();
                 ((MainActivity) getActivity()).changeState("!!8");
             }
         });
@@ -146,24 +151,39 @@ public class DashboardFragment extends Fragment {
                     tvLabelTreatment.setVisibility(View.VISIBLE);
                     tvStatus.setText("HEALTY");
                     tvMessage.setText(R.string.message_healthy);
+                    showTreatment(new NormalFragment());
                 } else if (lastUpdate.getCode() == 1) {
                     tvLabelTreatment.setVisibility(View.VISIBLE);
                     tvStatus.setText("REST");
                     tvMessage.setText(R.string.message_rest);
+                    showTreatment(new RestFragment());
                 } else if (lastUpdate.getCode() == 2) {
                     tvLabelTreatment.setVisibility(View.VISIBLE);
                     tvStatus.setText("HYPOTHERMIA");
                     tvMessage.setText(R.string.message_hipotermia);
+                    showTreatment(new HyphoFragment());
                 } else if (lastUpdate.getCode() == 3) {
                     tvLabelTreatment.setVisibility(View.VISIBLE);
                     tvStatus.setText("EMERGENCY");
                     tvMessage.setText(R.string.message_emergency);
+                    showTreatment(new EmergencyFragment());
                 }
             }
         }
 
         handler.postDelayed(runnable, 5000);
     }
+
+    private void showTreatment(final Fragment fragment) {
+        lnTreatment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity) getActivity()).focusFragment = fragment;
+                ((MainActivity) getActivity()).loadFragment(((MainActivity) getActivity()).focusFragment);
+            }
+        });
+    }
+
 
     private void updateBodyData() {
         getActivity().runOnUiThread(new Runnable() {

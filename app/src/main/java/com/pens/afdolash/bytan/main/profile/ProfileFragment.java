@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,7 +25,9 @@ import com.pens.afdolash.bytan.other.DatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import static com.pens.afdolash.bytan.intro.IntroductionActivity.EXTRAS_USER_GENDER;
 import static com.pens.afdolash.bytan.intro.IntroductionActivity.EXTRAS_USER_NAME;
 import static com.pens.afdolash.bytan.intro.IntroductionActivity.USER_PREF;
 
@@ -41,7 +44,9 @@ public class ProfileFragment extends Fragment {
     private TextView tvTitle;
     private RecyclerView rcHistory;
     private LinearLayout lnEmpty;
+    private ImageView imgPeople;
 
+    private Random random = new Random();
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -57,12 +62,14 @@ public class ProfileFragment extends Fragment {
         tvTitle = (TextView) view.findViewById(R.id.tv_title);
         rcHistory = (RecyclerView) view.findViewById(R.id.rc_history);
         lnEmpty = (LinearLayout) view.findViewById(R.id.ln_empty);
+        imgPeople = (ImageView) view.findViewById(R.id.img_people);
 
         db = new DatabaseHelper(getContext());
         histories.addAll(db.getAllHistory());
 
         preferences = getContext().getSharedPreferences(USER_PREF, Context.MODE_PRIVATE);
         String name = preferences.getString(EXTRAS_USER_NAME, "Guest");
+        String gender = preferences.getString(EXTRAS_USER_GENDER, "Male");
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         rcHistory.setLayoutManager(layoutManager);
@@ -82,9 +89,26 @@ public class ProfileFragment extends Fragment {
 
         tvTitle.setText(name +"'s\nHistory");
 
+        if (gender.equals("Female")) {
+            final String str = "ai_woman_" + random.nextInt(3);
+            imgPeople.setImageDrawable(getResources().getDrawable(getResourceID(str, "drawable", getContext())));
+        } else {
+            final String str = "ai_man_" + random.nextInt(3);
+            imgPeople.setImageDrawable(getResources().getDrawable(getResourceID(str, "drawable", getContext())));
+        }
+
         toggleEmptyHistory();
 
         return view;
+    }
+
+    private int getResourceID(final String resName, final String resType, final Context ctx) {
+        final int ResourceID = ctx.getResources().getIdentifier(resName, resType, ctx.getApplicationInfo().packageName);
+        if (ResourceID == 0) {
+            throw new IllegalArgumentException("No resource string found with name " + resName);
+        } else {
+            return ResourceID;
+        }
     }
 
     /**

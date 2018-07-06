@@ -319,13 +319,13 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/img_status"
+                android:id="@+id/img_refresh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:layout_gravity="center"
                 android:layout_marginLeft="8dp"
-                android:src="@drawable/ic_launcher_background"/>
+                android:src="@drawable/ic_refresh"/>
 
         </LinearLayout>
 
