@@ -53,7 +53,6 @@
                             android:id="@+id/tv_name_group"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="AndroidDev"
                             android:textSize="12sp"
                             android:textColor="@color/colorWhite"
                             android:fontFamily="@font/segoe"/>
@@ -62,7 +61,6 @@
                             android:id="@+id/tv_name_master"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Afdolash's Group"
                             android:textSize="10sp"
                             android:textColor="@color/colorWhite"
                             android:fontFamily="@font/segoe"/>

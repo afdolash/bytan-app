@@ -29,11 +29,15 @@ import com.pens.afdolash.bytan.bluetooth.BluetoothData;
 import com.pens.afdolash.bytan.main.MainActivity;
 import com.pens.afdolash.bytan.main.dashboard.focus.FocusHeartFragment;
 import com.pens.afdolash.bytan.main.dashboard.focus.FocusTempFragment;
+import com.pens.afdolash.bytan.main.dashboard.focus.PeltierTempFragment;
 import com.pens.afdolash.bytan.main.dashboard.treatment.EmergencyFragment;
 import com.pens.afdolash.bytan.main.dashboard.treatment.HyphoFragment;
 import com.pens.afdolash.bytan.main.dashboard.treatment.NormalFragment;
 import com.pens.afdolash.bytan.main.dashboard.treatment.RestFragment;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static com.pens.afdolash.bytan.bluetooth.BluetoothActivity.DEVICE_PREF;
@@ -49,9 +53,9 @@ public class DashboardFragment extends Fragment {
 
     private SharedPreferences prefUser, prefDevice;
 
-    private TextView tvName, tvAddress, tvMessage, tvTemp, tvHeart, tvHeater, tvStatus, tvLabelTreatment;
+    private TextView tvName, tvAddress, tvMessage, tvTemp, tvHeart, tvHeater, tvStatus, tvLabelTreatment, tvLastUpdate;
     private ImageView imgRefresh;
-    private LinearLayout lnTemperature, lnHeart, lnTreatment;
+    private LinearLayout lnTemperature, lnHeart, lnTreatment, lnHeater;
 
     private Handler handler = new Handler();
     private final Runnable runnable = new Runnable() {
@@ -81,10 +85,12 @@ public class DashboardFragment extends Fragment {
         tvHeater = (TextView) view.findViewById(R.id.tv_heater);
         tvStatus = (TextView) view.findViewById(R.id.tv_status);
         tvLabelTreatment = (TextView) view.findViewById(R.id.tv_label_treatment);
+        tvLastUpdate = (TextView) view.findViewById(R.id.tv_lastupdate);
         imgRefresh = (ImageView) view.findViewById(R.id.img_refresh);
         lnHeart = (LinearLayout) view.findViewById(R.id.ln_heart);
         lnTemperature = (LinearLayout) view.findViewById(R.id.ln_temperature);
         lnTreatment = (LinearLayout) view.findViewById(R.id.ln_treatment);
+        lnHeater = (LinearLayout) view.findViewById(R.id.ln_heater);
 
         // Get user data from shared preference
         prefUser = getContext().getSharedPreferences(USER_PREF, Context.MODE_PRIVATE);
@@ -110,7 +116,7 @@ public class DashboardFragment extends Fragment {
             public void onClick(View view) {
                 ((MainActivity) getActivity()).focusFragment = new FocusHeartFragment();
                 ((MainActivity) getActivity()).loadFragment(((MainActivity) getActivity()).focusFragment);
-                ((MainActivity) getActivity()).changeState("!!9");
+                ((MainActivity) getActivity()).changeState("!!8");
             }
         });
 
@@ -119,7 +125,15 @@ public class DashboardFragment extends Fragment {
             public void onClick(View view) {
                 ((MainActivity) getActivity()).focusFragment = new FocusTempFragment();
                 ((MainActivity) getActivity()).loadFragment(((MainActivity) getActivity()).focusFragment);
-                ((MainActivity) getActivity()).changeState("!!9");
+                ((MainActivity) getActivity()).changeState("!!8");
+            }
+        });
+
+        lnHeater.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity) getActivity()).focusFragment = new PeltierTempFragment();
+                ((MainActivity) getActivity()).loadFragment(((MainActivity) getActivity()).focusFragment);
             }
         });
 
@@ -168,6 +182,20 @@ public class DashboardFragment extends Fragment {
                     tvMessage.setText(R.string.message_emergency);
                     showTreatment(new EmergencyFragment());
                 }
+            }
+        }
+
+        String s = ((MainActivity) getActivity()).lastUpdate;
+        if (s != null) {
+            String date = new SimpleDateFormat("HHmmss").format(new Date());
+            float timestamp = Math.abs(Float.parseFloat(date) - Float.parseFloat(s));
+
+            if (timestamp / 60 > 59) {
+                tvLastUpdate.setText(String.format("%.0f", timestamp / 3600) +" hours ago");
+            }else if (timestamp > 59) {
+                tvLastUpdate.setText(String.format("%.0f", timestamp / 60) +" minutes ago");
+            } else {
+                tvLastUpdate.setText(String.format("%.0f", timestamp) +" seconds ago");
             }
         }
 

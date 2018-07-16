@@ -75,7 +75,7 @@ public class WifiDirectAdapter extends RecyclerView.Adapter<WifiDirectAdapter.My
                         ((MainActivity) context).loadFragment(new MemberFragment());
 
                         editor.putString(EXTRAS_GROUP_NAME, device.getTxtRecordMap().get(WroupService.SERVICE_GROUP_NAME));
-                        editor.putString(EXTRAS_GROUP_OWNER, device.getDeviceName() +"'s Group");
+                        editor.putString(EXTRAS_GROUP_OWNER, device.getDeviceName());
                         editor.putBoolean(EXTRAS_GROUP_IS_OWNER, false);
                         editor.commit();
 

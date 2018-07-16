@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,15 +50,19 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MyViewHold
         holder.tvName.setText(member.getDevice().getDeviceName());
 
         String date = new SimpleDateFormat("HHmmss").format(new Date());
-        int timestamp = Integer.parseInt(date) - Integer.parseInt(member.getTimestamp());
+        float timestamp = Math.abs(Float.parseFloat(date) - Float.parseFloat(member.getTimestamp()));
 
         if (timestamp / 60 > 59) {
-            holder.tvTimestamp.setText(timestamp / 3600 +" hours ago");
+            holder.tvTimestamp.setText(String.format("%.0f", timestamp / 3600) +" hours ago");
         }else if (timestamp > 59) {
-            holder.tvTimestamp.setText(timestamp / 60 +" minutes ago");
+            holder.tvTimestamp.setText(String.format("%.0f", timestamp / 60) +" minutes ago");
         } else {
-            holder.tvTimestamp.setText(timestamp +" seconds ago");
+            holder.tvTimestamp.setText(String.format("%.0f", timestamp) +" seconds ago");
         }
+
+        Log.i("Date", date);
+        Log.i("Member Time", member.getTimestamp());
+        Log.i("Timestamp", String.valueOf(timestamp));
 
         Location memberLoc = new Location("");
         memberLoc.setLatitude(Double.parseDouble(member.getLatitude()));

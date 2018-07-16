@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abemart.wroup.client.WroupClient;
@@ -120,6 +121,7 @@ public class GroupFragment extends Fragment implements GroupCreationDialog.Group
                     ((MainActivity) getActivity()).loadFragment(new MemberFragment());
 
                     editor.putString(EXTRAS_GROUP_NAME, groupName);
+                    editor.putString(EXTRAS_GROUP_OWNER, "You are the owner! ");
                     editor.putBoolean(EXTRAS_GROUP_IS_OWNER, true);
                     editor.commit();
 
@@ -129,7 +131,7 @@ public class GroupFragment extends Fragment implements GroupCreationDialog.Group
 
                 @Override
                 public void onErrorServiceRegistered(WiFiP2PError wiFiP2PError) {
-                    Toast.makeText(getContext(), "Error creating group. "+ wiFiP2PError.toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Please make sure your Wi-Fi in on!"+ wiFiP2PError.toString(), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
@@ -138,7 +140,7 @@ public class GroupFragment extends Fragment implements GroupCreationDialog.Group
     }
 
     @Override
-    public void onGroupDiscovered(final RecyclerView rcWifi) {
+    public void onGroupDiscovered(final RecyclerView rcWifi, final TextView tvStatus) {
         if (rcWifi != null) {
             wroupClient.discoverServices(5000L, new ServiceDiscoveredListener() {
                 @Override
@@ -152,8 +154,10 @@ public class GroupFragment extends Fragment implements GroupCreationDialog.Group
                     Log.i(GROUP_TAG, "Found '" + serviceDevices.size() + "' groups");
 
                     if (serviceDevices.isEmpty()) {
-                        Toast.makeText(getContext(), "Sorry, there aren't any group nearby",Toast.LENGTH_LONG).show();
+                        tvStatus.setText("Sorry, there aren't any group nearby.");
                     } else {
+                        tvStatus.setVisibility(View.GONE);
+
                         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
                         rcWifi.setLayoutManager(layoutManager);
                         rcWifi.setItemAnimator(new DefaultItemAnimator());
@@ -163,7 +167,7 @@ public class GroupFragment extends Fragment implements GroupCreationDialog.Group
 
                 @Override
                 public void onError(WiFiP2PError wiFiP2PError) {
-                    Toast.makeText(getContext(), "Error searching groups: " + wiFiP2PError, Toast.LENGTH_LONG).show();
+                    tvStatus.setText("Please restart your Wi-Fi!");
                 }
             });
         }

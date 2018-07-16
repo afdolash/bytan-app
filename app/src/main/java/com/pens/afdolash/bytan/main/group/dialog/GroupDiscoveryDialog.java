@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.pens.afdolash.bytan.R;
 
@@ -19,7 +20,7 @@ import com.pens.afdolash.bytan.R;
 
 public class GroupDiscoveryDialog extends DialogFragment {
     public interface GroupDiscoveryListener {
-        void onGroupDiscovered(RecyclerView rcWifi);
+        void onGroupDiscovered(RecyclerView rcWifi, TextView tvStatus);
     }
 
     private GroupDiscoveryListener listener;
@@ -32,9 +33,10 @@ public class GroupDiscoveryDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_discover_group, null);
 
         RecyclerView rcWifi = view.findViewById(R.id.rc_wifi);
+        TextView tvStatus = view.findViewById(R.id.tv_status);
 
         if (listener != null) {
-            listener.onGroupDiscovered(rcWifi);
+            listener.onGroupDiscovered(rcWifi, tvStatus);
         }
 
         builder.setView(view);

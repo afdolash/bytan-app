@@ -74,14 +74,8 @@ public class FocusTempFragment extends Fragment {
                 dataTemp.clear();
                 isStop = false;
 
-                // Send state ACTIVE to Arduino
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((MainActivity)getActivity()).changeState("!!7");
-                    }
-                }, 5000);
+                // Send state FOCUS to Arduino
+                ((MainActivity)getActivity()).changeState("!!7");
 
                 updateBodyData();
             }

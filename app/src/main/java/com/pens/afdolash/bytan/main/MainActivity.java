@@ -56,6 +56,7 @@ import com.pens.afdolash.bytan.other.GPSTracker;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -115,6 +116,9 @@ public class MainActivity extends AppCompatActivity implements DataReceivedListe
     private Dialog dialogLoading;
     private BottomNavigationViewEx navigation;
     private int selectedNavId = R.id.nav_dashboard;
+
+    public String lastUpdate;
+    private boolean doubleBackToExit = false;
 
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -264,14 +268,6 @@ public class MainActivity extends AppCompatActivity implements DataReceivedListe
             }
         });
         dialogLoading.show();
-
-        // Send state ACTIVE to Arduino
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                changeState("!!8");
-            }
-        }, 5000);
     }
 
     @Override
@@ -300,6 +296,14 @@ public class MainActivity extends AppCompatActivity implements DataReceivedListe
                 Log.d(MAIN_TAG, "Connect request result: " + result);
             }
         }
+
+        // Send state ACTIVE to Arduino
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                changeState("!!8");
+            }
+        }, 5000);
     }
 
     @Override
@@ -342,7 +346,19 @@ public class MainActivity extends AppCompatActivity implements DataReceivedListe
                 selectedNavId = R.id.nav_dashboard;
                 loadFragment(new DashboardFragment());
             } else {
-                super.onBackPressed();
+                if (doubleBackToExit) {
+                    super.onBackPressed();
+                }
+
+                this.doubleBackToExit = true;
+                Toast.makeText(this, "Please click back again to exit.", Toast.LENGTH_SHORT).show();
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        doubleBackToExit = false;
+                    }
+                }, 2000);
             }
         } else {
             loadFragment(new DashboardFragment());
@@ -446,8 +462,9 @@ public class MainActivity extends AppCompatActivity implements DataReceivedListe
 
                 dataList.add(bluetoothData);
 
-                int bodyCode = bluetoothData.getCode();
+                lastUpdate = new SimpleDateFormat("HHmmss").format(new Date());
 
+                int bodyCode = bluetoothData.getCode();
                 if (bodyCode > 1 && bodyCode != lastBodyCode && bodyCode != 99) {
                     double latitude = tracker.getLatitude();
                     double longitude = tracker.getLongitude();
@@ -612,7 +629,7 @@ public class MainActivity extends AppCompatActivity implements DataReceivedListe
                             + "code : "+ lastUpdate.getCode() +", "
                             + "latitude : "+ latitude +", "
                             + "longitude : "+ longitude +", "
-                            + "timestamp : "+ Calendar.getInstance().getTime()
+                            + "timestamp : "+ new SimpleDateFormat("HHmmss").format(new Date())
                             + "}";
                 } else {
                     messageStr = "{"
@@ -682,7 +699,6 @@ public class MainActivity extends AppCompatActivity implements DataReceivedListe
                             isExist = true;
                             memberList.remove(member);
                             memberList.add(memberData);
-                            Toast.makeText(MainActivity.this, "Duplicated.", Toast.LENGTH_SHORT).show();
                             break;
                         }
                     }
@@ -691,7 +707,7 @@ public class MainActivity extends AppCompatActivity implements DataReceivedListe
                         memberList.add(memberData);
                     }
 
-                    Toast.makeText(MainActivity.this, "Member Data : "+ memberList.size(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Data receive.", Toast.LENGTH_SHORT).show();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -721,7 +737,7 @@ public class MainActivity extends AppCompatActivity implements DataReceivedListe
                         + "code : "+ lastUpdate.getCode() +", "
                         + "latitude : "+ latitude +", "
                         + "longitude : "+ longitude +", "
-                        + "timestamp : "+ Calendar.getInstance().getTime()
+                        + "timestamp : "+ new SimpleDateFormat("HHmmss").format(new Date())
                         + "}";
             } else {
                 messageStr = "{"

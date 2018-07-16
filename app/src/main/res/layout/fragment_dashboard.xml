@@ -187,6 +187,7 @@
                 android:layout_weight="1">
 
                 <LinearLayout
+                    android:id="@+id/ln_heater"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -314,6 +315,15 @@
                     android:text="00:00:00:00:00:00"
                     android:textSize="12sp"
                     android:textColor="@color/colorWhite"
+                    android:fontFamily="@font/segoe"/>
+
+                <TextView
+                    android:id="@+id/tv_lastupdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="@color/colorWhite"
+                    android:layout_gravity="bottom"
                     android:fontFamily="@font/segoe"/>
 
             </LinearLayout>

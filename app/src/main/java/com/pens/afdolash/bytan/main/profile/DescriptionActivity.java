@@ -114,6 +114,7 @@ public class DescriptionActivity extends AppCompatActivity {
         try {
             SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = fmt.parse(dateStr);
+            date.setTime(date.getTime() + 25200000);
             SimpleDateFormat fmtOut = new SimpleDateFormat("HH.mm");
             return fmtOut.format(date);
         } catch (ParseException e) {

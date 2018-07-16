@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abemart.wroup.client.WroupClient;
 import com.abemart.wroup.common.messages.MessageWrapper;
@@ -105,6 +106,10 @@ public class MemberFragment extends Fragment {
 
         metrics = ((MainActivity) getActivity()).metrics;
 
+        // Check if location is available
+        myLatitude = ((MainActivity) getActivity()).tracker.getLatitude();
+        myLongitude = ((MainActivity) getActivity()).tracker.getLongitude();
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         rcMember.setLayoutManager(layoutManager);
         rcMember.setItemAnimator(new DefaultItemAnimator());
@@ -126,9 +131,12 @@ public class MemberFragment extends Fragment {
         prefGroup = getActivity().getSharedPreferences(GROUP_PREF, Context.MODE_PRIVATE);
         editGroup = prefGroup.edit();
 
-        groupName = prefGroup.getString(EXTRAS_GROUP_NAME, null);
-        groupOwner = prefGroup.getString(EXTRAS_GROUP_OWNER, null);
+        groupName = prefGroup.getString(EXTRAS_GROUP_NAME, "Anonymous");
+        groupOwner = prefGroup.getString(EXTRAS_GROUP_OWNER, "Anonymous");
         isGroupOwner = prefGroup.getBoolean(EXTRAS_GROUP_IS_OWNER, false);
+
+        tvNameGroup.setText(groupName +"'s Group");
+        tvNameMaster.setText(groupOwner);
 
         if (isGroupOwner) {
             wroupService = ((MainActivity) getActivity()).mWroupService;
@@ -172,11 +180,9 @@ public class MemberFragment extends Fragment {
         child.setY(posY(myLatitude) - 125f);
 
         ImageView imgStatus = (ImageView) child.findViewById(R.id.img_status);
-        TextView tvDistance = (TextView) child.findViewById(R.id.tv_distance);
         TextView tvName = (TextView) child.findViewById(R.id.tv_name);
 
         imgStatus.setVisibility(View.GONE);
-        tvDistance.setVisibility(View.GONE);
         tvName.setText("Me");
 
         rvLocation.addView(child);
@@ -213,7 +219,6 @@ public class MemberFragment extends Fragment {
             child.setY(posY(Double.parseDouble(member.getLatitude())) - 135f);
 
             ImageView imgStatus = (ImageView) child.findViewById(R.id.img_status);
-            TextView tvDistance = (TextView) child.findViewById(R.id.tv_distance);
             TextView tvName = (TextView) child.findViewById(R.id.tv_name);
 
             tvName.setText(member.getDevice().getDeviceName());
@@ -225,8 +230,6 @@ public class MemberFragment extends Fragment {
             Location myLoc = new Location("");
             myLoc.setLatitude(myLatitude);
             myLoc.setLongitude(myLongitude);
-
-            tvDistance.setText((int)myLoc.distanceTo(memberLoc) +"m");
 
             switch (Integer.parseInt(member.getCode())) {
                 case 0:
@@ -240,6 +243,9 @@ public class MemberFragment extends Fragment {
                     break;
                 case 3:
                     imgStatus.setColorFilter(ContextCompat.getColor(getContext(), R.color.statusEmergency), android.graphics.PorterDuff.Mode.SRC_IN);
+                    break;
+                default:
+                    imgStatus.setColorFilter(ContextCompat.getColor(getContext(), R.color.statusIdentified), android.graphics.PorterDuff.Mode.SRC_IN);
                     break;
             }
 
@@ -260,13 +266,10 @@ public class MemberFragment extends Fragment {
     }
 
     private void sendDataFirstTime() {
-        // Check if location is available
-        myLatitude = ((MainActivity) getActivity()).tracker.getLatitude();
-        myLongitude = ((MainActivity) getActivity()).tracker.getLongitude();
-
         String messageStr = null;
-
         List<BluetoothData> dataList = ((MainActivity) getActivity()).getDataList();
+
+        String date = new SimpleDateFormat("HHmmss").format(Calendar.getInstance().getTime());
 
         if (dataList.size() > 0) {
             BluetoothData lastUpdate = dataList.get(dataList.size() - 1);
@@ -277,7 +280,7 @@ public class MemberFragment extends Fragment {
                     + "code : "+ lastUpdate.getCode() +", "
                     + "latitude : "+ myLatitude +", "
                     + "longitude : "+ myLongitude +", "
-                    + "timestamp : "+ Calendar.getInstance().getTime()
+                    + "timestamp : "+ date
                     + "}";
         } else {
             messageStr = "{"
@@ -287,7 +290,7 @@ public class MemberFragment extends Fragment {
                     + "code : "+ 0 +", "
                     + "latitude : "+ myLatitude +", "
                     + "longitude : "+ myLongitude +", "
-                    + "timestamp : "+ new SimpleDateFormat("HHmmss").format(new Date())
+                    + "timestamp : "+ date
                     + "}";
         }
 
@@ -301,6 +304,8 @@ public class MemberFragment extends Fragment {
             } else {
                 ((MainActivity) getActivity()).mWroupClient.sendMessageToAllClients(normalMessage);
             }
+
+            Toast.makeText(getContext(), "Broadcasting...", Toast.LENGTH_SHORT).show();
         }
     }
 
