@@ -116,7 +116,6 @@ public class DashboardFragment extends Fragment {
             public void onClick(View view) {
                 ((MainActivity) getActivity()).focusFragment = new FocusHeartFragment();
                 ((MainActivity) getActivity()).loadFragment(((MainActivity) getActivity()).focusFragment);
-                ((MainActivity) getActivity()).changeState("!!8");
             }
         });
 
@@ -125,7 +124,6 @@ public class DashboardFragment extends Fragment {
             public void onClick(View view) {
                 ((MainActivity) getActivity()).focusFragment = new FocusTempFragment();
                 ((MainActivity) getActivity()).loadFragment(((MainActivity) getActivity()).focusFragment);
-                ((MainActivity) getActivity()).changeState("!!8");
             }
         });
 

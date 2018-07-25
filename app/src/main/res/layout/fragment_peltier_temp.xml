@@ -34,7 +34,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:label="32°C"
             app:label_color="#000000"
             app:label_size="50"
             app:main_circle_color="#FFFFFF"
@@ -61,7 +60,7 @@
                 android:layout_marginBottom="24dp">
 
                 <RelativeLayout
-                    android:id="@+id/ln_power"
+                    android:id="@+id/rv_auto"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:orientation="vertical"
@@ -71,58 +70,18 @@
                     android:layout_marginTop="4dp"
                     android:elevation="2dp">
 
-                    <TextView
+                    <ImageView
+                        android:id="@+id/img_auto"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="OFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:layout_centerInParent="true"
-                        android:fontFamily="@font/segoe"/>
+                        android:src="@drawable/ai_temp_auto"
+                        android:layout_margin="6dp"
+                        android:layout_centerInParent="true"/>
 
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/ln_cool"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/xd_circle_white"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp"
-                    android:elevation="2dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_centerInParent="true">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="20"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:fontFamily="@font/segoe"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="°C"
-                            android:textSize="8sp"
-                            android:textColor="#9E9E9E"
-                            android:layout_marginLeft="1dp"
-                            android:fontFamily="@font/segoe"/>
-
-                    </LinearLayout>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/ln_warm"
+                    android:id="@+id/rv_power"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:orientation="vertical"
@@ -133,35 +92,38 @@
                     android:layout_marginTop="4dp"
                     android:elevation="2dp">
 
-                    <LinearLayout
+                    <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_centerInParent="true">
+                        android:src="@drawable/ai_temp_off"
+                        android:layout_margin="6dp"
+                        android:layout_centerInParent="true"/>
+10
+                </RelativeLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="40"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:fontFamily="@font/segoe"/>
+                <RelativeLayout
+                    android:id="@+id/rv_half"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/xd_circle_white"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:elevation="2dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="°C"
-                            android:textSize="8sp"
-                            android:textColor="#9E9E9E"
-                            android:layout_marginLeft="1dp"
-                            android:fontFamily="@font/segoe"/>
-
-                    </LinearLayout>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ai_temp_half"
+                        android:layout_margin="6dp"
+                        android:layout_centerInParent="true"/>
 
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/ln_hot"
+                    android:id="@+id/rv_max"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:orientation="vertical"
@@ -171,30 +133,12 @@
                     android:layout_marginTop="4dp"
                     android:elevation="2dp">
 
-                    <LinearLayout
+                    <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_centerInParent="true">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="60"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:fontFamily="@font/segoe"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="°C"
-                            android:textSize="8sp"
-                            android:textColor="#9E9E9E"
-                            android:layout_marginLeft="1dp"
-                            android:fontFamily="@font/segoe"/>
-
-                    </LinearLayout>
+                        android:src="@drawable/ai_temp_max"
+                        android:layout_margin="6dp"
+                        android:layout_centerInParent="true"/>
 
                 </RelativeLayout>
 

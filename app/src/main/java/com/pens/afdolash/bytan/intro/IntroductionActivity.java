@@ -21,6 +21,7 @@ public class IntroductionActivity extends AppCompatActivity {
     public static final String USER_PREF = "USER_PREF";
     public static final String EXTRAS_USER_NAME = "USER_NAME";
     public static final String EXTRAS_USER_GENDER = "USER_GENDER";
+    public static final String EXTRAS_USER_AUTO = "USER_AUTO";
 
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;

@@ -2,11 +2,16 @@ package com.pens.afdolash.bytan.main.dashboard.focus;
 
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -20,15 +25,20 @@ import com.sdsmdg.harjot.crollerTest.OnCrollerChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.pens.afdolash.bytan.intro.IntroductionActivity.EXTRAS_USER_AUTO;
+import static com.pens.afdolash.bytan.intro.IntroductionActivity.USER_PREF;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class PeltierTempFragment extends Fragment {
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
 
     private Croller croller;
-    private RelativeLayout lnPower, lnCool, lnWarm, lnHot;
+    private RelativeLayout rvAuto, rvPower, rvHalf, rvMax;
+    private ImageView imgAuto;
 
-    private int ambLast;
     private List<BluetoothData> dataList = new ArrayList<>();
 
     public PeltierTempFragment() {
@@ -43,25 +53,23 @@ public class PeltierTempFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_peltier_temp, container, false);
 
         croller = (Croller) view.findViewById(R.id.croller);
-        lnPower = (RelativeLayout) view.findViewById(R.id.ln_power);
-        lnCool = (RelativeLayout) view.findViewById(R.id.ln_cool);
-        lnWarm = (RelativeLayout) view.findViewById(R.id.ln_warm);
-        lnHot = (RelativeLayout) view.findViewById(R.id.ln_hot);
+        rvAuto = (RelativeLayout) view.findViewById(R.id.rv_auto);
+        rvPower = (RelativeLayout) view.findViewById(R.id.rv_power);
+        rvHalf = (RelativeLayout) view.findViewById(R.id.rv_half);
+        rvMax = (RelativeLayout) view.findViewById(R.id.rv_max);
+        imgAuto = (ImageView) view.findViewById(R.id.img_auto);
 
-        dataList = ((MainActivity)getActivity()).getDataList();
+        preferences = getContext().getSharedPreferences(USER_PREF, Context.MODE_PRIVATE);
+        editor = preferences.edit();
 
-        if (dataList.size() > 0)
-            ambLast = Math.round(Float.parseFloat(dataList.get(dataList.size() - 1).getAmbTemp()));
-
-        croller.setProgress(ambLast);
         croller.setOnCrollerChangeListener(new OnCrollerChangeListener() {
-            int progressValue = ambLast;
+            int progressValue = 0;
 
             @Override
             public void onProgressChanged(Croller croller, int progress) {
                 // Use the progress
                 progressValue = progress;
-                croller.setLabel(progressValue +"°C");
+                croller.setLabel(progressValue +"~");
             }
 
             @Override
@@ -74,10 +82,39 @@ public class PeltierTempFragment extends Fragment {
                 // Tracking stopped
                 Toast.makeText(getContext(), "Warming...", Toast.LENGTH_SHORT).show();
                 ((MainActivity) getActivity()).changeState("##"+ progressValue);
+                Log.i("Peltier Value", String.valueOf(progressValue));
             }
         });
 
-        lnPower.setOnClickListener(new View.OnClickListener() {
+
+        boolean b = preferences.getBoolean(EXTRAS_USER_AUTO, true);
+        if (b) {
+            imgAuto.setImageResource(R.drawable.ai_temp_auto_on);
+        } else {
+            imgAuto.setImageResource(R.drawable.ai_temp_auto);
+        }
+
+        rvAuto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean b = preferences.getBoolean(EXTRAS_USER_AUTO, true);
+
+                if (b) {
+                    Toast.makeText(getContext(), "Auto is off", Toast.LENGTH_SHORT).show();
+                    ((MainActivity) getActivity()).changeState("@@0");
+                    editor.putBoolean(EXTRAS_USER_AUTO, false);
+                    imgAuto.setImageResource(R.drawable.ai_temp_auto);
+                } else {
+                    Toast.makeText(getContext(), "Auto is on", Toast.LENGTH_SHORT).show();
+                    ((MainActivity) getActivity()).changeState("@@1");
+                    editor.putBoolean(EXTRAS_USER_AUTO, true);
+                    imgAuto.setImageResource(R.drawable.ai_temp_auto_on);
+                }
+                editor.apply();
+            }
+        });
+
+        rvPower.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(), "Cooling...", Toast.LENGTH_SHORT).show();
@@ -86,25 +123,16 @@ public class PeltierTempFragment extends Fragment {
             }
         });
 
-        lnCool.setOnClickListener(new View.OnClickListener() {
+        rvHalf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(), "Warming...", Toast.LENGTH_SHORT).show();
-                ((MainActivity) getActivity()).changeState("##20");
-                croller.setProgress(20);
+                ((MainActivity) getActivity()).changeState("##30");
+                croller.setProgress(30);
             }
         });
 
-        lnWarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(), "Warming...", Toast.LENGTH_SHORT).show();
-                ((MainActivity) getActivity()).changeState("##40");
-                croller.setProgress(40);
-            }
-        });
-
-        lnHot.setOnClickListener(new View.OnClickListener() {
+        rvMax.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(), "Warming...", Toast.LENGTH_SHORT).show();
